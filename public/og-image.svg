@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#05080d"/>
+
+  <!-- Circuit pattern overlay -->
+  <g fill="none" stroke="#00f3ff" stroke-width="1" stroke-opacity="0.05">
+    <path d="M0 0h1200v630H0z"/>
+    <path d="M0 126h1200M0 252h1200M0 378h1200M0 504h1200"/>
+    <path d="M150 0v630M300 0v630M450 0v630M600 0v630M750 0v630M900 0v630M1050 0v630"/>
+  </g>
+
+  <!-- Glow orbs -->
+  <circle cx="100" cy="100" r="300" fill="#00f3ff" opacity="0.06">
+    <animate attributeName="opacity" values="0.04;0.08;0.04" dur="6s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1100" cy="530" r="250" fill="#a855f7" opacity="0.06">
+    <animate attributeName="opacity" values="0.04;0.08;0.04" dur="8s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Main content -->
+  <g transform="translate(600, 315)">
+    <!-- Logo/Icon -->
+    <rect x="-60" y="-140" width="120" height="120" rx="24" fill="url(#logoGrad)"/>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#00f3ff"/>
+      <stop offset="100%" stopColor="#a855f7"/>
+    </linearGradient>
+    <rect x="-35" y="-110" width="70" height="70" rx="10" fill="#05080d" stroke="#00f3ff" stroke-width="2"/>
+    <path d="M-20 -60v50M20 -60v50M-30 -10h60" stroke="#00f3ff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="-25" r="10" fill="#00f3ff"/>
+
+    <!-- Title -->
+    <text x="0" y="-15" text-anchor="middle" fill="#f8fafc" font-size="48" font-weight="700" font-family="Space Grotesk, system-ui, sans-serif">
+      ESP32 & Arduino Development
+    </text>
+
+    <!-- Subtitle -->
+    <text x="0" y="40" text-anchor="middle" fill="#94a3b8" font-size="24" font-family="Inter, system-ui, sans-serif">
+      Custom IoT & Embedded Systems
+    </text>
+
+    <!-- Tagline -->
+    <text x="0" y="110" text-anchor="middle" fill="#00f3ff" font-size="20" font-weight="600" font-family="Inter, system-ui, sans-serif">
+      Building Smart Hardware That Connects the Physical World
+    </text>
+
+    <!-- CTA text -->
+    <text x="0" y="170" text-anchor="middle" fill="#64748b" font-size="16" font-family="Inter, system-ui, sans-serif">
+      Professional firmware • PCB design • IoT systems • Smart home automation
+    </text>
+  </g>
+
+  <!-- Corner accents -->
+  <g stroke="#00f3ff" stroke-width="3" fill="none">
+    <path d="M40 40h100M40 40v100"/>
+    <path d="M1160 40h-100M1160 40v100"/>
+    <path d="M40 590h100M40 590v-100"/>
+    <path d="M1160 590h-100M1160 590v-100"/>
+  </g>
+
+  <!-- Domain placeholder -->
+  <text x="600" y="600" text-anchor="middle" fill="#334155" font-size="14" font-family="Inter, system-ui, sans-serif">
+    your-domain.com
+  </text>
+</svg>

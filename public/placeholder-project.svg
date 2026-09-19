@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <rect width="800" height="450" fill="#0a0f1a"/>
+  <rect x="100" y="100" width="600" height="250" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+  <rect x="100" y="85" width="100" height="30" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="150" y="105" text-anchor="middle" fill="#00f3ff" font-size="14" font-weight="bold" font-family="monospace">ESP32</text>
+  <circle cx="550" cy="100" r="12" fill="#00f3ff" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="580" cy="100" r="12" fill="#22c55e" opacity="0.3">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <g stroke="#00f3ff" stroke-width="1.5" opacity="0.15" stroke-linecap="round">
+    <path d="M150 200 Q300 180 400 200"/>
+    <path d="M400 200 Q550 180 700 200"/>
+    <path d="M400 100 Q400 150 400 200"/>
+    <path d="M400 200 Q400 250 400 300"/>
+  </g>
+  <g stroke="#1e293b" stroke-width="2">
+    <line x1="150" y1="250" x2="200" y2="250"/>
+    <line x1="150" y1="280" x2="220" y2="280"/>
+    <line x1="150" y1="310" x2="190" y2="310"/>
+    <line x1="650" y1="250" x2="600" y2="250"/>
+    <line x1="650" y1="280" x2="620" y2="280"/>
+    <line x1="650" y1="310" x2="610" y2="310"/>
+  </g>
+  <text x="400" y="380" text-anchor="middle" fill="#64748b" font-size="16" font-family="system-ui">Concept Project Placeholder</text>
+  <text x="400" y="405" text-anchor="middle" fill="#475569" font-size="12" font-family="system-ui">Replace with actual project images</text>
+</svg>

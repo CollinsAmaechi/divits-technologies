@@ -1,0 +1,36 @@
+{
+  "name": "[YOUR BUSINESS NAME]",
+  "short_name": "ESP32 Dev",
+  "description": "Professional ESP32, Arduino, and embedded systems development. Custom IoT solutions, smart home automation, sensor systems, and electronics prototyping.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05080d",
+  "theme_color": "#00f3ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "developer", "technology"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Start a project inquiry",
+      "url": "/#contact",
+      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "description": "View featured projects",
+      "url": "/#projects",
+      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+    }
+  ]
+}

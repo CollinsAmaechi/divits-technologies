@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="200" fill="#05080d"/>
+  <circle cx="200" cy="200" r="180" fill="#0a0f1a" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Decorative circuit pattern -->
+  <g fill="none" stroke="#00f3ff" stroke-width="1.5" stroke-opacity="0.15">
+    <path d="M80 200h240M200 80v240"/>
+    <path d="M120 120h160v160H120z"/>
+    <path d="M160 160h80v80H160z"/>
+  </g>
+
+  <!-- Person silhouette -->
+  <circle cx="200" cy="140" r="50" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <ellipse cx="200" cy="310" rx="90" ry="70" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+
+  <!-- Accent glow -->
+  <circle cx="200" cy="140" r="55" fill="none" stroke="#00f3ff" stroke-width="1" opacity="0.3">
+    <animate attributeName="stroke-opacity" values="0.1;0.4;0.1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Tech icons around -->
+  <g font-size="24" font-family="system-ui" text-anchor="middle">
+    <text x="60" y="100" fill="#00f3ff" opacity="0.6">📡</text>
+    <text x="340" y="100" fill="#a855f7" opacity="0.6">⚡</text>
+    <text x="60" y="320" fill="#22c55e" opacity="0.6">🔧</text>
+    <text x="340" y="320" fill="#f97316" opacity="0.6">💻</text>
+  </g>
+</svg>
