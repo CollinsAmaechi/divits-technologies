@@ -55,7 +55,7 @@ const Header = () => {
                 <circle cx="12" cy="10" r="2" />
               </svg>
             </div>
-            <span className="font-heading font-bold text-heading-lg text-text-primary hidden sm:block">
+            <span className="font-heading font-bold text-text-primary text-sm sm:text-heading-lg truncate">
               {siteConfig.business.name}
             </span>
           </div>

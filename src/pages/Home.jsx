@@ -36,7 +36,7 @@ const Home = () => {
         className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24"
         aria-labelledby="hero-title"
       >
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="text-center lg:text-left">
               <ScrollReveal delay={0.1} distance={15}>
@@ -155,7 +155,7 @@ const Home = () => {
       {/* Short Introduction / About Preview */}
       <section id="about-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="about-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -185,7 +185,7 @@ const Home = () => {
       {/* Short Services Preview */}
       <section id="services-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="services-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -249,7 +249,7 @@ const Home = () => {
       {/* Short Projects Preview */}
       <section id="projects-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="projects-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -328,7 +328,7 @@ const Home = () => {
       {/* Short Process Preview */}
       <section id="process-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="process-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -388,7 +388,7 @@ const Home = () => {
       {/* Why Choose Me Preview */}
       <section id="why-choose-me-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="why-choose-me-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -452,7 +452,7 @@ const Home = () => {
       {/* FAQ Preview */}
       <section id="faq-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="faq-preview-title">
         <div className="absolute inset-0" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
@@ -531,7 +531,7 @@ const Home = () => {
       {/* Final CTA */}
       <section id="final-cta" className="relative py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_50%,rgba(201,168,76,0.06)_0%,transparent_70%)] pointer-events-none" aria-hidden="true" />
-        <div className="section-container relative z-10 w-full max-w-full">
+        <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}

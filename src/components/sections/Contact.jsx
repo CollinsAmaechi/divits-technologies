@@ -105,7 +105,7 @@ const Contact = () => {
       <div className="absolute inset-0" aria-hidden="true">
       </div>
 
-      <div className="section-container relative z-10 w-full max-w-full">
+      <div className="section-container relative z-10">
         {/* Section Header */}
         <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
           <motion.span
