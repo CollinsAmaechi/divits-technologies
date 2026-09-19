@@ -6,7 +6,7 @@
 export const siteConfig = {
   // Business Information
   business: {
-    name: 'Amaechi Collins Ekene',
+    name: 'DIVITS Technologies',
     tagline: 'Turning Student Ideas Into Real-World Technology',
     description: 'Professional ESP32, Arduino, and embedded systems development. Custom IoT solutions, smart home automation, sensor systems, and electronics prototyping.',
     founded: '2026',
@@ -58,9 +58,9 @@ export const siteConfig = {
 
   // SEO & Metadata
   seo: {
-    siteName: 'Amaechi Collins Ekene',
+    siteName: 'DIVITS Technologies',
     siteUrl: 'https://[YOUR_DOMAIN].com',
-    defaultTitle: 'Amaechi Collins Ekene | ESP32, Arduino & Embedded Systems',
+    defaultTitle: 'DIVITS Technologies | ESP32, Arduino & Embedded Systems',
     defaultDescription: 'Professional ESP32, Arduino, and embedded systems development. Custom IoT solutions, smart home automation, sensor systems, PCB prototyping, and electronics troubleshooting.',
     defaultImage: '/og-image.png',
     twitterHandle: '@[YOUR_TWITTER_HANDLE]',

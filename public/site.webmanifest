@@ -1,6 +1,6 @@
 {
-  "name": "[YOUR BUSINESS NAME]",
-  "short_name": "ESP32 Dev",
+  "name": "DIVITS Technologies",
+  "short_name": "DIVITS",
   "description": "Professional ESP32, Arduino, and embedded systems development. Custom IoT solutions, smart home automation, sensor systems, and electronics prototyping.",
   "start_url": "/",
   "display": "standalone",
