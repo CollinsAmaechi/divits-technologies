@@ -72,17 +72,9 @@ export const siteConfig = {
   },
 
   // Form Configuration
+  // Formspree endpoint for order submissions
   form: {
-    // Formspree endpoint (create a form at https://formspree.io)
-    // Or use EmailJS, Netlify Forms, or your own backend
-    endpoint: 'https://formspree.io/f/[YOUR_FORMSPREE_ID]',
-    // EmailJS configuration (alternative)
-    emailjs: {
-      serviceId: '[YOUR_EMAILJS_SERVICE_ID]',
-      templateId: '[YOUR_EMAILJS_TEMPLATE_ID]',
-      publicKey: '[YOUR_EMAILJS_PUBLIC_KEY]',
-    },
-    // Enable/disable file uploads
+    endpoint: 'https://formspree.io/f/xeaoeaad',
     enableFileUpload: true,
     maxFileSize: 10 * 1024 * 1024, // 10MB
     allowedFileTypes: ['.pdf', '.png', '.jpg', '.jpeg', '.zip', '.rar', '.ino', '.cpp', '.h', '.c'],

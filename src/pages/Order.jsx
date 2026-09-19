@@ -128,6 +128,7 @@ const Order = () => {
       formData.append('name', data.name);
       formData.append('email', data.email);
       formData.append('whatsapp', data.whatsapp || 'Not provided');
+      formData.append('project', data.service);
 
       if (data.files && data.files.length > 0) {
         data.files.forEach((file, index) => {
@@ -223,6 +224,15 @@ const Order = () => {
                   <p className="text-body text-text-secondary mt-2">
                     {submitMessage}
                   </p>
+                  <a
+                    href={formatWhatsAppLink(siteConfig.contact.whatsapp.number, `Hi! I've just submitted a project request. Service: ${watch('service')}, Budget: ${watch('budget')}, Deadline: ${watch('deadline')}. Please review and contact me.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl bg-accent-gold/20 border border-accent-gold/40 text-accent-gold text-body font-medium hover:bg-accent-gold/30 transition-colors"
+                  >
+                    <MessageSquare className="w-5 h-5" aria-hidden="true" />
+                    Send Request via WhatsApp
+                  </a>
                 </div>
               </div>
             </motion.div>
@@ -337,7 +347,7 @@ const Order = () => {
                         error={errors.description?.message}
                         required
                         rows={6}
-                        showCharCount
+                        showWordCount
                         maxLength={5000}
                         hint="Minimum 50 characters. The more detail you provide, the more accurate my estimate will be."
                         {...register('description')}
@@ -524,14 +534,50 @@ const Order = () => {
                         variant="primary"
                         size="lg"
                         className="w-full"
-                        onClick={() => {
+                        onClick={async () => {
                           setSubmitStatus('submitting');
-                          setTimeout(() => {
-                            setSubmitStatus('success');
-                            setSubmitMessage('Your project request has been received! I will review it and contact you within 24 hours to discuss the details and final price.');
-                            setCurrentStep(3);
-                            reset();
-                          }, 1500);
+                          try {
+                            const service = selectedServiceData?.title || watch('service');
+                            const description = watch('description');
+                            const budget = watch('budget');
+                            const deadline = getDeadlineLabel(watch('deadline'));
+                            const name = watch('name');
+                            const email = watch('email');
+                            const whatsapp = watch('whatsapp') || 'Not provided';
+
+                            const formData = new FormData();
+                            formData.append('service', service);
+                            formData.append('description', description);
+                            formData.append('budget', budget);
+                            formData.append('deadline', deadline);
+                            formData.append('name', name);
+                            formData.append('email', email);
+                            formData.append('whatsapp', whatsapp);
+                            formData.append('project', service);
+                            if (watchedFiles && watchedFiles.length > 0) {
+                              watchedFiles.forEach((file, index) => {
+                                formData.append(`file_${index}`, file);
+                              });
+                            }
+
+                            const response = await fetch(siteConfig.form.endpoint, {
+                              method: 'POST',
+                              body: formData,
+                              headers: { Accept: 'application/json' },
+                            });
+
+                            if (response.ok) {
+                              setSubmitStatus('success');
+                              setSubmitMessage('Your project request has been received! I will review it and contact you within 24 hours to discuss the details and final price.');
+                              setCurrentStep(3);
+                              reset();
+                            } else {
+                              throw new Error('Submission failed');
+                            }
+                          } catch (error) {
+                            setSubmitStatus('error');
+                            setSubmitMessage('Something went wrong. Please try again or contact me directly via WhatsApp or email.');
+                          }
                         }}
                         loading={submitStatus === 'submitting'}
                         disabled={submitStatus === 'submitting'}

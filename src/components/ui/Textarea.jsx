@@ -9,6 +9,7 @@ const Textarea = forwardRef(({
   required = false,
   disabled = false,
   showCharCount = false,
+  showWordCount = false,
   maxLength,
   rows = 4,
   ...props
@@ -18,16 +19,21 @@ const Textarea = forwardRef(({
   const hintId = hint ? `${textareaId}-hint` : undefined;
   const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
   const [charCount, setCharCount] = useState(0);
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (props.value !== undefined) {
       setCharCount(props.value.length);
+      const words = props.value.trim() ? props.value.trim().split(/\s+/).length : 0;
+      setWordCount(words);
     }
   }, [props.value]);
 
   const handleChange = (e) => {
     const value = e.target.value;
     setCharCount(value.length);
+    const words = value.trim() ? value.trim().split(/\s+/).filter(Boolean).length : 0;
+    setWordCount(words);
     if (props.onChange) {
       props.onChange(e);
     }
@@ -54,16 +60,22 @@ const Textarea = forwardRef(({
         onChange={handleChange}
         {...props}
       />
-      {(showCharCount || maxLength) && (
+      {(showCharCount || showWordCount || maxLength) && (
         <div className="flex justify-between mt-1.5">
           {!error && hint && (
             <p id={hintId} className="text-body-sm text-text-muted">
               {hint}
             </p>
           )}
-          <p className={`text-caption ${charCount > (maxLength || Infinity) * 0.9 ? 'text-accent-orange' : 'text-text-muted'}`}>
-            {charCount}{maxLength && ` / ${maxLength}`}
-          </p>
+          {showWordCount ? (
+            <p className={`text-caption ${wordCount > (maxLength || Infinity) * 0.9 ? 'text-accent-orange' : 'text-text-muted'}`}>
+              {wordCount} word{wordCount !== 1 && 's'}{maxLength && ` / ${maxLength}`}
+            </p>
+          ) : (
+            <p className={`text-caption ${charCount > (maxLength || Infinity) * 0.9 ? 'text-accent-orange' : 'text-text-muted'}`}>
+              {charCount}{maxLength && ` / ${maxLength}`}
+            </p>
+          )}
         </div>
       )}
       {error && !showCharCount && !maxLength && (
