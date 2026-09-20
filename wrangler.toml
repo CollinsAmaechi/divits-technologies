@@ -1,7 +1,10 @@
 name = "divits-technologies"
 compatibility_date = "2026-09-19"
+main = "src/worker/index.js"
 
-pages_build_output_dir = "./dist"
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
 
 [[d1_databases]]
 binding = "DB"
