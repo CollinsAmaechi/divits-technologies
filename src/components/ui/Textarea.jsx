@@ -57,8 +57,8 @@ const Textarea = forwardRef(({
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={describedBy}
         aria-required={required}
-        onChange={handleChange}
         {...props}
+        onChange={handleChange}
       />
       {(showCharCount || showWordCount || maxLength) && (
         <div className="flex justify-between mt-1.5">

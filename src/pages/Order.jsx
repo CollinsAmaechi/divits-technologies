@@ -106,11 +106,38 @@ const Order = () => {
       }
     }
 
-    // Handle project pre-selection (does not set the service dropdown)
+    // Handle project pre-selection
     if (projectParam) {
       const matchingProject = projects.find((p) => p.id === projectParam);
+
       if (matchingProject) {
-        setValue('description', matchingProject.shortDescription, { shouldValidate: false });
+        const projectServiceMap = {
+          'iot-power-distribution': 'iot-systems',
+          'esp32-sensor-system': 'sensor-monitoring',
+          'smart-automation-controller': 'custom-hardware',
+        };
+
+        const matchingServiceId = projectServiceMap[matchingProject.id];
+
+        if (matchingServiceId) {
+          setValue('service', matchingServiceId, { shouldValidate: false });
+        }
+
+        const projectDescription = [
+          `I want a project similar to "${matchingProject.title}".`,
+          '',
+          matchingProject.fullDescription,
+          '',
+          'Key features:',
+          ...matchingProject.features.map((feature) => `- ${feature}`),
+          '',
+          'Technologies:',
+          matchingProject.technologies.join(', '),
+        ].join('\n');
+
+        setValue('description', projectDescription, {
+          shouldValidate: false,
+        });
       }
     }
   }, []);
@@ -130,10 +157,44 @@ const Order = () => {
       formData.append('whatsapp', data.whatsapp || 'Not provided');
       formData.append('project', data.service);
 
+      // Upload attachments to Cloudinary first
       if (data.files && data.files.length > 0) {
-        data.files.forEach((file, index) => {
-          formData.append(`file_${index}`, file);
-        });
+        const uploadedFiles = [];
+
+        for (const file of data.files) {
+          const uploadData = new FormData();
+          uploadData.append('file', file);
+          uploadData.append('upload_preset', 'divits_orders');
+
+          const uploadResponse = await fetch(
+            'https://api.cloudinary.com/v1_1/yiaine0j/auto/upload',
+            {
+              method: 'POST',
+              body: uploadData,
+            }
+          );
+
+          if (!uploadResponse.ok) {
+            const uploadError = await uploadResponse.json().catch(() => ({}));
+            throw new Error(
+              uploadError?.error?.message || `File upload failed (${uploadResponse.status})`
+            );
+          }
+
+          const uploaded = await uploadResponse.json();
+
+          uploadedFiles.push({
+            name: file.name,
+            url: uploaded.secure_url,
+          });
+        }
+
+        formData.append(
+          'attachments',
+          uploadedFiles
+            .map(file => `${file.name}: ${file.url}`)
+            .join('\n')
+        );
       }
 
       const response = await fetch(siteConfig.form.endpoint, {
@@ -148,11 +209,17 @@ const Order = () => {
         setCurrentStep(3);
         reset();
       } else {
-        throw new Error('Submission failed');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Formspree error:', errorData);
+        throw new Error(
+          errorData?.errors?.map(e => e.message || e.code).join(', ') ||
+          `Submission failed (${response.status})`
+        );
       }
     } catch (error) {
+      console.error('Order submission error:', error);
       setSubmitStatus('error');
-      setSubmitMessage('Something went wrong. Please try again or contact me directly via WhatsApp or email.');
+      setSubmitMessage(error.message || 'Something went wrong. Please try again or contact me directly via WhatsApp or email.');
     }
   };
 

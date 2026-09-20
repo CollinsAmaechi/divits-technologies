@@ -140,7 +140,7 @@ const Projects = () => {
                           size="sm"
                           className="flex-1"
                           as={Link}
-                          to="/order"
+                          to={`/order?project=${project.id}`}
                         >
                           Request Similar Project
                         </Button>
