@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 
 const VALID_PILLARS = ['assist', 'build', 'iot', 'home'];
 const REQUIRED_FIELDS = ['customer_name', 'customer_email', 'pillar', 'service', 'description'];
@@ -47,7 +46,7 @@ export async function onRequest({ request, env, }) {
     }
 
     // Generate unique request ID server-side — do not trust client-provided ID
-    const requestId = `req-${randomUUID()}`;
+    const requestId = `req-${crypto.randomUUID()}`;
     const now = new Date().toISOString();
 
     // Simple rate limiting: max 5 requests per hour per IP
@@ -74,7 +73,7 @@ export async function onRequest({ request, env, }) {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .bind(
-        randomUUID(),
+        crypto.randomUUID(),
         requestId,
         now,
         now,
