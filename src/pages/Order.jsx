@@ -176,20 +176,23 @@ const Order = () => {
     setSubmitMessage('');
 
     try {
-      const formData = new FormData();
-      formData.append('service', data.service);
-      formData.append('description', data.description);
-      formData.append('budget', data.budget);
-      formData.append('deadline', data.deadline);
-      formData.append('name', data.name);
-      formData.append('email', data.email);
-      formData.append('whatsapp', data.whatsapp || 'Not provided');
-      formData.append('project', data.service);
+      // Build plain request payload for Worker/D1
+      const requestPayload = {
+        customer_name: data.name,
+        customer_email: data.email,
+        whatsapp: data.whatsapp || '',
+        pillar: pillarContext || 'build',
+        service: data.service,
+        description: data.description,
+        budget: data.budget,
+        deadline: data.deadline,
+        source: 'direct',
+        files: [],
+      };
 
-      // Upload attachments to Cloudinary first
+      // Upload attachments to Cloudinary first (preserved existing flow)
+      let uploadedFiles = [];
       if (data.files && data.files.length > 0) {
-        const uploadedFiles = [];
-
         for (const file of data.files) {
           const uploadData = new FormData();
           uploadData.append('file', file);
@@ -211,38 +214,82 @@ const Order = () => {
           }
 
           const uploaded = await uploadResponse.json();
-
-          uploadedFiles.push({
-            name: file.name,
-            url: uploaded.secure_url,
-          });
+          uploadedFiles.push({ name: file.name, url: uploaded.secure_url });
         }
+        requestPayload.files = uploadedFiles;
+      }
 
+      // === PHASE 3A: Submit to Worker/D1 (source of truth) ===
+      let workerSuccess = false;
+      let workerError = null;
+      try {
+        const workerResponse = await fetch('/api/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestPayload),
+        });
+        if (workerResponse.ok) {
+          const result = await workerResponse.json();
+          workerSuccess = true;
+          requestPayload.d1RequestId = result.data.request_id;
+        } else {
+          const errData = await workerResponse.json().catch(() => ({}));
+          workerError = errData.error || `Worker submission failed (${workerResponse.status})`;
+        }
+      } catch (err) {
+        workerError = err.message || 'Worker/D1 connection failed';
+      }
+
+      // === Continue: Submit to Formspree (existing notification flow) ===
+      const formData = new FormData();
+      formData.append('service', data.service);
+      formData.append('description', data.description);
+      formData.append('budget', data.budget);
+      formData.append('deadline', data.deadline);
+      formData.append('name', data.name);
+      formData.append('email', data.email);
+      formData.append('whatsapp', data.whatsapp || 'Not provided');
+      formData.append('project', data.service);
+      if (uploadedFiles.length > 0) {
         formData.append(
           'attachments',
-          uploadedFiles
-            .map(file => `${file.name}: ${file.url}`)
-            .join('\n')
+          uploadedFiles.map(f => `${f.name}: ${f.url}`).join('\n')
         );
       }
 
-      const response = await fetch(siteConfig.form.endpoint, {
+      const formspreeResponse = await fetch(siteConfig.form.endpoint, {
         method: 'POST',
         body: formData,
         headers: { Accept: 'application/json' },
       });
 
-      if (response.ok) {
-        setSubmitStatus('success');
-        setSubmitMessage('Your project request has been received! I will review it and contact you within 24 hours to discuss the details and final price.');
-        setCurrentStep(3);
-        reset();
+      const formspreeOk = formspreeResponse.ok;
+
+      // === Determine overall result ===
+      if (workerSuccess) {
+        // D1 record created successfully
+        if (formspreeOk) {
+          // Both succeeded — ideal case
+          setSubmitStatus('success');
+          setSubmitMessage('Your project request has been received! I will review it and contact you within 24 hours to discuss the details and final price.');
+          setCurrentStep(3);
+          reset();
+        } else {
+          // D1 succeeded but Formspree failed — record exists but notification may not have sent
+          const errData = await formspreeResponse.json().catch(() => ({}));
+          const formspreeErr = errData?.errors?.map(e => e.message || e.code).join(', ') || `Formspree failed (${formspreeResponse.status})`;
+          console.error('Formspree notification failed (D1 record exists):', formspreeErr);
+          setSubmitStatus('success');
+          setSubmitMessage('Your project request has been recorded successfully! Your notification email may have been delayed. I will review it and contact you within 24 hours.');
+          setCurrentStep(3);
+          reset();
+        }
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Formspree error:', errorData);
+        // D1 failed — do not treat as successful submission
+        console.error('Worker/D1 error:', workerError);
+        const formspreeMsg = formspreeOk ? ' Formspree received the form, but the primary record was not saved.' : '';
         throw new Error(
-          errorData?.errors?.map(e => e.message || e.code).join(', ') ||
-          `Submission failed (${response.status})`
+          workerError || 'Failed to create request record' + formspreeMsg
         );
       }
     } catch (error) {
