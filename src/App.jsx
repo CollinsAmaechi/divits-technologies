@@ -15,6 +15,7 @@ const Assist = lazy(() => import('./pages/Assist'));
 const Build = lazy(() => import('./pages/Build'));
 const Iot = lazy(() => import('./pages/Iot'));
 const HomeAutomation = lazy(() => import('./pages/HomeAutomation'));
+const Admin = lazy(() => import('./pages/Admin'));
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-bg-primary flex items-center justify-center" />}>
         <Routes>
+          <Route path="/admin" element={<Admin />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="services" element={<Services />} />
