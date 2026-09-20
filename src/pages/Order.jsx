@@ -85,10 +85,21 @@ const Order = () => {
   const watchedEmail = watch('email');
   const watchedWhatsapp = watch('whatsapp');
   const watchedDescription = watch('description');
+  const watchedServiceParam = watch('service');
+
+  // Determine pillar context for visual indicator
+  const pillarContext = searchParams.get('pillar');
+  const pillarLabels = {
+    assist: { label: 'DIVITS Assist', color: 'amber' },
+    build: { label: 'DIVITS Build', color: 'orange' },
+    iot: { label: 'DIVITS IoT', color: 'iot' },
+    home: { label: 'DIVITS Home', color: 'home' },
+  };
+  const activePillar = pillarContext ? pillarLabels[pillarContext] : null;
 
   const selectedServiceData = services.find((s) => s.id === watchedService);
 
-  // Pre-selection: read service/project from URL query params on mount only
+  // Pre-selection: read service/project/pillar from URL query params on mount only
   const hasPreSelected = useRef(false);
   useEffect(() => {
     if (hasPreSelected.current) return;
@@ -96,11 +107,29 @@ const Order = () => {
 
     const serviceParam = searchParams.get('service');
     const projectParam = searchParams.get('project');
+    const pillarParam = searchParams.get('pillar');
 
-    // Handle service pre-selection (takes priority if both params present)
+    // Pillar pre-selection maps to the first service in that pillar
+    const pillarServiceMap = {
+      assist: { serviceId: 'esp32-development', label: 'DIVITS Assist' },
+      build: { serviceId: 'custom-hardware', label: 'DIVITS Build' },
+      iot: { serviceId: 'iot-systems', label: 'DIVITS IoT' },
+      home: { serviceId: 'smart-home-automation', label: 'DIVITS Home' },
+    };
+
+    if (pillarParam && pillarServiceMap[pillarParam]) {
+      const pillarInfo = pillarServiceMap[pillarParam];
+      const matchingService = services.find((s) => s.id === pillarInfo.serviceId);
+      if (matchingService) {
+        setValue('service', matchingService.id, { shouldValidate: false });
+        setValue('description', `I need help with ${pillarInfo.label}. ${matchingService.description}`, { shouldValidate: false });
+      }
+    }
+
+    // Handle service pre-selection (takes priority if both pillar and service params present)
     if (serviceParam) {
       const matchingService = services.find((s) => s.id === serviceParam);
-      if (matchingService) {
+      if (matchingService && !pillarParam) {
         setValue('service', matchingService.id, { shouldValidate: false });
         setValue('description', matchingService.description, { shouldValidate: false });
       }
@@ -261,17 +290,22 @@ const Order = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-caption font-medium mb-4 border ${
+              activePillar
+                ? `bg-accent-${activePillar.color}/10 border-accent-${activePillar.color}/20 text-accent-${activePillar.color}`
+                : 'bg-accent-gold/10 border-accent-gold/20 text-accent-gold'
+            }`}
           >
-            <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
-            Custom Project Request
+            <span className={`w-2 h-2 rounded-full ${activePillar ? `bg-accent-${activePillar.color}` : 'bg-accent-gold'}`} aria-hidden="true" />
+            {activePillar ? activePillar.label : 'Custom Project Request'}
           </motion.span>
           <h2 id="order-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-            Custom Project Request
+            {activePillar ? `${activePillar.label} — Project Request` : 'Custom Project Request'}
           </h2>
           <p className="text-body-lg text-text-secondary">
-            Tell me about your project and I'll review the requirements, then get back to you with a
-            detailed plan and a fair price estimate.
+            {activePillar
+              ? `You are requesting help through ${activePillar.label}. Tell us about your project and I'll review the requirements, then get back to you.`
+              : 'Tell me about your project and I\'ll review the requirements, then get back to you with a detailed plan and a fair price estimate.'}
           </p>
         </ScrollReveal>
 

@@ -7,8 +7,8 @@ export const siteConfig = {
   // Business Information
   business: {
     name: 'DIVITS Technologies',
-    tagline: 'Turning Student Ideas Into Real-World Technology',
-    description: 'Professional ESP32, Arduino, and embedded systems development. Custom IoT solutions, smart home automation, sensor systems, and electronics prototyping.',
+    tagline: 'Build. Debug. Learn.',
+    description: 'We help people solve technology and project problems — coding, debugging, university projects, Arduino, ESP32, electronics, IoT, automation, and custom software and hardware builds.',
     founded: '2026',
     location: {
       city: 'Lagos',
@@ -21,7 +21,7 @@ export const siteConfig = {
   developer: {
     name: 'Amaechi Collins Ekene',
     title: 'Embedded Systems Developer',
-    bio: 'I specialize in building custom embedded systems and IoT solutions using ESP32, Arduino, and modern electronics. With a focus on clean code, practical engineering, and clear communication, I help bring hardware ideas to life.',
+    bio: 'I help people solve technology and project problems. Whether it is a bug, a university project, a custom ESP32 build, or an IoT system, I work with you to get things working.',
     avatar: '/avatar.svg', // Replace with your photo in public/
     skills: [
       'ESP32', 'Arduino', 'C/C++', 'Python',
@@ -69,6 +69,38 @@ export const siteConfig = {
       'smart home automation', 'PCB design', 'sensor systems', 'firmware development',
       'custom hardware', 'prototyping', 'electronics troubleshooting'
     ],
+  },
+
+  // DIVITS Service Pillars
+  pillars: {
+    assist: {
+      id: 'divits-assist',
+      name: 'DIVITS Assist',
+      description: 'Coding, debugging, university and project assistance, electronics troubleshooting and technical guidance.',
+      color: 'amber',
+      icon: 'help',
+    },
+    build: {
+      id: 'divits-build',
+      name: 'DIVITS Build',
+      description: 'Custom software and hardware projects, Arduino and ESP32 systems, prototypes and technical builds.',
+      color: 'orange',
+      icon: 'hammer',
+    },
+    iot: {
+      id: 'divits-iot',
+      name: 'DIVITS IoT',
+      description: 'IoT systems, connected devices, MQTT, automation, monitoring and remote control.',
+      color: 'iot',
+      icon: 'network',
+    },
+    home: {
+      id: 'divits-home',
+      name: 'DIVITS Home',
+      description: 'Smart-home automation concepts and future installation services — lighting, fans, AC, sockets, power monitoring, generator/inverter integration and other Nigerian-home use cases.',
+      color: 'home',
+      icon: 'home',
+    },
   },
 
   // Form Configuration

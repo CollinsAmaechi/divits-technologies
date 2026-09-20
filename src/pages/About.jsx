@@ -71,18 +71,17 @@ const About = () => {
                 </h3>
                 <div className="prose prose-invert max-w-none text-text-secondary">
                   <p className="mb-4">
-                    I specialize in building custom embedded systems and IoT solutions using ESP32, Arduino,
-                    and modern electronics. From concept to production-ready prototype, I handle the complete
-                    development cycle: hardware design, firmware development, cloud integration, and testing.
+                    I help people solve technology and project problems. Whether it is a bug, a broken circuit,
+                    a university project, or a complete IoT system — I work with you to get things running.
                   </p>
                   <p className="mb-4">
                     My approach combines practical engineering with clean software practices. Every project
                     receives the same attention to detail — proper power management, robust communication
-                    protocols, thorough documentation, and code that's maintainable long after delivery.
+                    protocols, thorough documentation, and code that is maintainable long after delivery.
                   </p>
                   <p>
-                    Whether you need a simple sensor node, a complex mesh network, or a custom PCB with
-                    firmware, I deliver solutions that work reliably in the real world.
+                    From a single line of code that will not compile to a multi-node sensor network,
+                    I deliver solutions that work reliably in the real world.
                   </p>
                 </div>
               </div>
@@ -124,16 +123,47 @@ const About = () => {
                 ))}
               </div>
             </ScrollReveal>
+
+            {/* Honest Experience Section */}
+            <ScrollReveal distance={30} delay={0.3}>
+              <div className="mt-8 p-6 rounded-2xl bg-accent-gold/5 border border-accent-gold/20">
+                <h4 className="font-heading font-semibold text-heading-md text-text-primary mb-3">
+                  Experience & Availability
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                  <div className="p-4 rounded-xl bg-bg-elevated/50 border border-border/30">
+                    <div className="font-heading font-bold text-heading-md text-text-primary">3</div>
+                    <div className="text-body-sm text-text-secondary">Concept / Demo Projects Built</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-bg-elevated/50 border border-border/30">
+                    <div className="font-heading font-bold text-heading-md text-text-primary">9</div>
+                    <div className="text-body-sm text-text-secondary">Common Questions Answered</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-bg-elevated/50 border border-border/30">
+                    <div className="font-heading font-bold text-heading-md text-text-primary">00</div>
+                    <div className="text-body-sm text-accent-gold font-medium">Nigerian Smart Homes Automated</div>
+                    <div className="text-body-sm text-text-muted">Be the first.</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-bg-elevated/50 border border-border/30">
+                    <div className="font-heading font-bold text-heading-md text-text-primary">4</div>
+                    <div className="text-body-sm text-text-secondary">Service Pillars</div>
+                  </div>
+                </div>
+                <p className="text-body-sm text-text-muted mt-4">
+                  All statistics reflect existing project data and concept work. We do not claim numbers that are not supported by our actual project portfolio.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
 
           <div className="space-y-8">
             <ScrollReveal distance={30} delay={0.1}>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: '15+', label: 'Projects Delivered', icon: Award },
-                  { value: '25+', label: 'Technologies', icon: Code },
-                  { value: '5+', label: 'IoT Protocols', icon: Wifi },
-                  { value: '100%', label: 'Client Satisfaction', icon: Target },
+                  { value: '3', label: 'Concept / Demo Projects', icon: Award },
+                  { value: '24', label: 'Skills Tracked', icon: Code },
+                  { value: '9', label: 'FAQ Items', icon: Wifi },
+                  { value: '4', label: 'Service Pillars', icon: Target },
                 ].map((stat, index) => (
                   <motion.div
                     key={stat.label}

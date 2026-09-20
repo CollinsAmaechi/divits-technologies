@@ -9,7 +9,7 @@ import { faqItems } from '../data/faq';
 import { siteConfig } from '../config/siteConfig';
 import Button from '../components/ui/Button';
 import GlassCard from '../components/ui/GlassCard';
-import { Cpu, Wifi, Radio, Home as HomeIcon, GitBranch, Thermometer } from 'lucide-react';
+import { Cpu, Wifi, Radio, Home as HomeIcon, GitBranch, Thermometer, Bug, Wrench, Network, Zap, Rocket, GraduationCap, Shield } from 'lucide-react';
 
 const trustIcons = {
   ESP32: Cpu,
@@ -19,6 +19,73 @@ const trustIcons = {
   Automation: HomeIcon,
   'Embedded Systems': Radio,
 };
+
+// "What's stopping your project?" cards
+const problemCards = [
+  {
+    icon: Bug,
+    title: 'My code doesn\'t work',
+    description: 'Firmware bugs, logic errors, or code that won\'t compile. I help you debug and get things working.',
+    link: '/assist',
+    linkLabel: 'Get help with my code',
+    pillar: 'divits-assist',
+    pillarLabel: 'DIVITS Assist',
+  },
+  {
+    icon: Wrench,
+    title: 'My hardware isn\'t working',
+    description: 'Circuit issues, broken connections, or hardware that won\'t power on. I help troubleshoot and fix it.',
+    link: '/assist',
+    linkLabel: 'Get help with my hardware',
+    pillar: 'divits-assist',
+    pillarLabel: 'DIVITS Assist',
+  },
+  {
+    icon: GraduationCap,
+    title: 'I need help with a university/project build',
+    description: 'Coursework, capstone projects, or thesis hardware. I help you understand and build what you need.',
+    link: '/assist',
+    linkLabel: 'Start a project request',
+    pillar: 'divits-assist',
+    pillarLabel: 'DIVITS Assist',
+  },
+  {
+    icon: Network,
+    title: 'I need an IoT system',
+    description: 'Connected devices, sensor networks, cloud dashboards, or remote monitoring. I design and build it.',
+    link: '/iot',
+    linkLabel: 'Start an IoT project',
+    pillar: 'divits-iot',
+    pillarLabel: 'DIVITS IoT',
+  },
+  {
+    icon: Zap,
+    title: 'I want to automate something',
+    description: 'Home automation, industrial control, or any system that needs to run on its own. I help make it real.',
+    link: '/iot',
+    linkLabel: 'Start an automation project',
+    pillar: 'divits-iot',
+    pillarLabel: 'DIVITS IoT',
+  },
+  {
+    icon: HomeIcon,
+    title: 'I want a smart home',
+    description: 'Smart lighting, climate control, security, and energy monitoring. Concepts and future installation services available.',
+    link: '/home-automation',
+    linkLabel: 'Explore smart home options',
+    pillar: 'divits-home',
+    pillarLabel: 'DIVITS Home',
+  },
+  {
+    icon: Rocket,
+    title: 'I have a project idea',
+    description: 'You have an idea but don\'t know where to start. Let\'s talk through it and figure out the path together.',
+    link: '/build',
+    linkLabel: 'Tell us what you\'re working on',
+    pillar: 'divits-build',
+    pillarLabel: 'DIVITS Build',
+  },
+];
 
 const Home = () => {
   const [openFAQ, setOpenFAQ] = useState(null);
@@ -48,17 +115,14 @@ const Home = () => {
 
               <ScrollReveal delay={0.2} distance={15}>
                 <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-6 leading-tight">
-                  Building Smart Hardware
-                  <br />
-                  <span className="gradient-text">That Connects the Physical World</span>
+                  Build. Debug. Learn.
                 </h1>
               </ScrollReveal>
 
               <ScrollReveal delay={0.3} distance={15}>
                 <p className="text-body-lg lg:text-body text-text-secondary mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Professional ESP32, Arduino, and embedded systems development.
-                  Custom IoT solutions, smart home automation, sensor systems, PCB prototyping,
-                  and electronics troubleshooting.
+                  Whether it is a bug, a broken circuit, a university project, or an IoT system —
+                  tell us what you are working on and we will help you get it running.
                 </p>
               </ScrollReveal>
 
@@ -70,15 +134,15 @@ const Home = () => {
                     as={Link}
                     to="/order"
                   >
-                    Start a Project
+                    Tell us what you are working on
                   </Button>
                   <Button
                     variant="secondary"
                     size="lg"
                     as={Link}
-                    to="/projects"
+                    to="/services"
                   >
-                    View My Projects
+                    View Our Services
                   </Button>
                 </div>
               </ScrollReveal>
@@ -131,9 +195,9 @@ const Home = () => {
                 </div>
                 <div className="mt-10 grid grid-cols-3 gap-4 md:max-w-md mx-auto">
                   {[
-                    { label: 'Projects', value: '15+', icon: Cpu },
-                    { label: 'Technologies', value: '25+', icon: Wifi },
-                    { label: 'Happy Clients', value: '10+', icon: Radio },
+                    { label: 'Services', value: '4', icon: Cpu },
+                    { label: 'Project Types', value: '11', icon: Wifi },
+                    { label: 'Concepts Built', value: '3', icon: Radio },
                   ].map((stat, index) => (
                     <ScrollReveal key={stat.label} delay={0.6 + index * 0.1} distance={15}>
                       <div className="text-center p-4 rounded-2xl bg-bg-elevated/50 border border-border/30">
@@ -152,8 +216,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Short Introduction / About Preview */}
-      <section id="about-preview" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="about-preview-title">
+      {/* What's Stopping Your Project? */}
+      <section id="problems" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="problems-title">
         <div className="absolute inset-0" aria-hidden="true" />
         <div className="section-container relative z-10">
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
@@ -164,20 +228,116 @@ const Home = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
             >
               <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
-              About Me
+              DIVITS Technologies
             </motion.span>
-            <h2 id="about-preview-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-              Embedded Systems Developer
+            <h2 id="problems-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+              What's stopping your project?
             </h2>
             <p className="text-body-lg text-text-secondary">
-              {siteConfig.developer.bio}
+              Every project starts with a problem. Choose the area that matches yours and let us help you move forward.
             </p>
           </ScrollReveal>
-          <ScrollReveal distance={20} delay={0.2} className="mt-8 text-center">
-            <Button variant="primary" size="lg" as={Link} to="/about">
-              Learn More About Me
+
+          <ScrollReveal distance={30} delay={0.1}>
+            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {problemCards.map((card, index) => {
+                const Icon = card.icon;
+                return (
+                  <StaggerItem key={card.title} delay={index * 0.05}>
+                    <motion.article
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-50px' }}
+                      className="group"
+                    >
+                      <GlassCard
+                        variant="elevated"
+                        hover
+                        padding="lg"
+                        border="accent"
+                        className="h-full flex flex-col"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-accent-gold/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                          <Icon className="w-7 h-7 text-accent-gold" aria-hidden="true" />
+                        </div>
+                        <h3 className="font-heading font-bold text-heading-md text-text-primary mb-3">
+                          {card.title}
+                        </h3>
+                        <p className="text-body text-text-secondary mb-6 flex-1 leading-relaxed">
+                          {card.description}
+                        </p>
+                        <Button variant="outline" size="sm" className="w-full mt-auto" as={Link} to={card.link}>
+                          {card.linkLabel}
+                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                        </Button>
+                      </GlassCard>
+                    </motion.article>
+                  </StaggerItem>
+                );
+              })}
+            </StaggerContainer>
+          </ScrollReveal>
+
+          <ScrollReveal distance={20} delay={0.3} className="mt-16 text-center">
+            <p className="text-body-lg text-text-secondary mb-6">
+              Not sure which area fits? You can describe your project in general terms and we will match it to the right service.
+            </p>
+            <Button variant="primary" size="lg" as={Link} to="/order">
+              Start a project request
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Button>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Honest Stats */}
+      <section id="stats" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="stats-title">
+        <div className="absolute inset-0" aria-hidden="true" />
+        <div className="section-container relative z-10">
+          <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
+            >
+              <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
+              Where We Stand
+            </motion.span>
+            <h2 id="stats-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+              Honest numbers
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal distance={30} delay={0.1}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+              <div className="text-center p-8 rounded-2xl bg-bg-elevated/50 border border-border/30">
+                <div className="font-heading font-bold text-display-sm text-text-primary gradient-text-gold">
+                  00
+                </div>
+                <div className="font-heading font-bold text-display-sm text-text-primary gradient-text-gold">
+                  Nigerian Smart Homes Automated
+                </div>
+                <div className="text-body-sm text-accent-gold mt-2 font-medium">Be the first.</div>
+                <p className="text-body-sm text-text-secondary mt-1">Smart-home automation is a future-facing service. We are building this capability.</p>
+              </div>
+
+              <div className="text-center p-8 rounded-2xl bg-bg-elevated/50 border border-border/30">
+                <div className="font-heading font-bold text-display-sm text-text-primary gradient-text-gold">
+                  3
+                </div>
+                <div className="text-body-sm text-accent-gold mt-2 font-medium">Concept / Demo Projects</div>
+                <p className="text-body-sm text-text-secondary mt-1">Working prototypes that demonstrate what is possible. Each is a learning project, not a deployed client system.</p>
+              </div>
+
+              <div className="text-center p-8 rounded-2xl bg-bg-elevated/50 border border-border/30">
+                <div className="font-heading font-bold text-display-sm text-text-primary gradient-text-gold">
+                  9
+                </div>
+                <div className="text-body-sm text-accent-gold mt-2 font-medium">Frequently Asked Questions</div>
+                <p className="text-body-sm text-text-secondary mt-1">Answers to common questions about ESP32, Arduino, IoT, troubleshooting, and more.</p>
+              </div>
+            </div>
           </ScrollReveal>
         </div>
       </section>
@@ -194,20 +354,25 @@ const Home = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
             >
               <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
-              Services
+              DIVITS Services
             </motion.span>
             <h2 id="services-preview-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-              What I Build
+              Four pillars to help you
             </h2>
             <p className="text-body-lg text-text-secondary">
-              End-to-end embedded systems development tailored to your requirements.
+              From debugging a single line of code to building a complete IoT system — we cover the full stack.
             </p>
           </ScrollReveal>
 
           <ScrollReveal distance={30} delay={0.1}>
-            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
-              {services.slice(0, 6).map((service, index) => (
-                <StaggerItem key={service.id} delay={index * 0.05}>
+            <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
+              {[
+                { name: 'DIVITS Assist', desc: 'Coding, debugging, university projects, and electronics troubleshooting', color: 'gold' },
+                { name: 'DIVITS Build', desc: 'Custom software and hardware projects, prototypes, and technical builds', color: 'amber' },
+                { name: 'DIVITS IoT', desc: 'IoT systems, connected devices, MQTT, automation, and monitoring', color: 'orange' },
+                { name: 'DIVITS Home', desc: 'Smart-home automation concepts and future installation services', color: 'yellow' },
+              ].map((pillar, index) => (
+                <StaggerItem key={pillar.name} delay={index * 0.05}>
                   <motion.article
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -215,20 +380,20 @@ const Home = () => {
                     className="group"
                   >
                     <GlassCard variant="elevated" hover padding="lg" border="accent" className="h-full flex flex-col">
-                      <motion.div
-                        className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${service.bgColor} ${service.borderColor} ${service.iconColor}`}
-                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                      >
-                        <service.icon className="w-6 h-6" aria-hidden="true" />
-                      </motion.div>
-                      <h3 className="font-heading font-bold text-heading-sm text-text-primary mb-2">
-                        {service.title}
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-accent-${pillar.color}/10`}>
+                        <div className={`w-8 h-8 rounded-xl bg-accent-${pillar.color}/20 flex items-center justify-center`}>
+                          <span className="font-heading font-bold text-accent-${pillar.color} text-body-sm">{index + 1}</span>
+                        </div>
+                      </div>
+                      <h3 className="font-heading font-bold text-heading-md text-text-primary mb-2">
+                        {pillar.name}
                       </h3>
-                      <p className="text-body text-text-secondary mb-3 text-sm leading-relaxed">
-                        {service.description.slice(0, 80)}...
+                      <p className="text-body text-text-secondary mb-4 text-sm leading-relaxed flex-1">
+                        {pillar.desc}
                       </p>
-                      <Button variant="outline" size="sm" className="w-full mt-auto" as={Link} to="/order">
-                        Request Service
+                      <Button variant="outline" size="sm" className="w-full mt-auto" as={Link} to="/services">
+                        Explore {pillar.name}
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                       </Button>
                     </GlassCard>
                   </motion.article>
@@ -261,10 +426,10 @@ const Home = () => {
               Projects
             </motion.span>
             <h2 id="projects-preview-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-              Selected Work
+              Concept / Demo Projects
             </h2>
             <p className="text-body-lg text-text-secondary">
-              Concept projects demonstrating ESP32, IoT, and embedded systems capabilities.
+              These are demonstration projects built to prove concepts and explore technology. They are not deployed client systems.
             </p>
           </ScrollReveal>
 
@@ -278,11 +443,19 @@ const Home = () => {
                     viewport={{ once: true, margin: '-50px' }}
                     className="group"
                   >
-                    <GlassCard variant="elevated" hover padding="none" border="accent" className="h-full flex flex-col overflow-hidden">
+                    <GlassCard
+                      variant="elevated"
+                      hover={true}
+                      padding="none"
+                      border="accent"
+                      className="h-full flex flex-col overflow-hidden"
+                      glow={index % 3 === 0}
+                      glowColor={index % 3 === 0 ? 'gold' : index % 3 === 1 ? 'amber' : 'yellow'}
+                    >
                       <div className="relative aspect-video overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-bg-elevated to-bg-secondary" />
                         <div className="absolute inset-0 flex items-center justify-center relative z-10">
-                          <svg className="w-24 h-24 text-border-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                          <svg className="w-32 h-32 text-border-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
                             <rect x="2" y="3" width="20" height="14" rx="2" />
                             <path d="M8 3v14M16 3v14M2 9h20" />
                             <circle cx="12" cy="10" r="2" />
@@ -290,7 +463,7 @@ const Home = () => {
                         </div>
                         {project.isConcept && (
                           <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-orange/20 border border-accent-orange/30 text-accent-orange text-caption font-medium">
-                            Concept Project
+                            {project.conceptLabel}
                           </span>
                         )}
                         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
@@ -299,13 +472,13 @@ const Home = () => {
                         </div>
                       </div>
                       <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="font-heading font-bold text-heading-md text-text-primary mb-2">
+                        <h3 className="font-heading font-bold text-heading-lg text-text-primary mb-2">
                           {project.title}
                         </h3>
-                        <p className="text-body text-text-secondary mb-3 text-sm line-clamp-2 flex-1">
+                        <p className="text-body text-text-secondary mb-3 text-sm line-clamp-3 flex-1">
                           {project.shortDescription}
                         </p>
-                        <Button variant="primary" size="sm" className="w-full mt-auto" as={Link} to="/order">
+                        <Button variant="primary" size="sm" className="w-full mt-auto" as={Link} to={`/order?project=${project.id}`}>
                           Request Similar Project
                         </Button>
                       </div>
@@ -317,8 +490,11 @@ const Home = () => {
           </ScrollReveal>
 
           <ScrollReveal distance={20} delay={0.3} className="mt-8 text-center">
-            <Button variant="primary" size="lg" as={Link} to="/projects">
-              View All Projects
+            <p className="text-body-lg text-text-secondary mb-6">
+              Want to build something of your own? Let us help.
+            </p>
+            <Button variant="primary" size="lg" as={Link} to="/order">
+              Request a Project
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Button>
           </ScrollReveal>
@@ -340,10 +516,10 @@ const Home = () => {
               How I Work
             </motion.span>
             <h2 id="process-preview-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-              Simple, Transparent Process
+              Simple, transparent process
             </h2>
             <p className="text-body-lg text-text-secondary">
-              From initial conversation to delivered project — clear steps, regular updates.
+              From initial conversation to delivered project — clear steps, regular updates, no surprises.
             </p>
           </ScrollReveal>
 
@@ -409,34 +585,42 @@ const Home = () => {
 
           <ScrollReveal distance={30} delay={0.1}>
             <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
-              {whyChooseMe.slice(0, 4).map((item, index) => (
-                <StaggerItem key={item.id} delay={index * 0.08}>
-                  <motion.article
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-50px' }}
-                    className="group"
-                  >
-                    <GlassCard variant="elevated" hover padding="lg" border="accent" className="h-full">
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.bgColor} ${item.iconColor}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5" aria-hidden="true">
-                            {item.id === 'custom-solutions' && <><path d="M18 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" /><path d="M2 18h4a2 2 0 0 0 2 2v4a2 2 0 0 0-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" /><path d="M2 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" /><path d="M18 18h4a2 2 0 0 0 2 2v4a2 2 0 0 0-2 2h-4a2 2 0 0 0-2-2v-4a2 2 0 0 0 2-2z" /></>}
-                            {item.id === 'clean-code' && <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></>}
-                            {item.id === 'practical-engineering' && <><path d="M14.7 16.2 19 11.9a2 2 0 0 0-.6-2.2L5 2l-4 4 10 10a2 2 0 0 0 2.2-.6z" /><path d="M16 12h6a2 2 0 0 1 2 2v6" /></>}
-                            {item.id === 'iot-connectivity' && <><path d="M12 20a10 10 0 1 1 0-20" /><path d="M12 2a1 1 0 0 1 1 1v4" /><path d="M12 19v4a1 1 0 0 1-1 1" /></>}
-                            {item.id === 'hw-sw-integration' && <><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 9h6M9 12h6M9 15h6" /></>}
-                            {item.id === 'clear-communication' && <><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>}
-                            {item.id === 'testing-troubleshooting' && <><circle cx="12" cy="12" r="10" /><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></>}
-                          </svg>
+              {whyChooseMe.slice(0, 4).map((item, index) => {
+                const IconMap = {
+                  'help-when-stuck': Bug,
+                  'custom-solutions': 'puzzle',
+                  'clean-code': 'code',
+                  'hw-sw-integration': 'cpu',
+                };
+                const IconComp = item.id === 'help-when-stuck' ? Bug : null;
+                return (
+                  <StaggerItem key={item.id} delay={index * 0.08}>
+                    <motion.article
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-50px' }}
+                      className="group"
+                    >
+                      <GlassCard variant="elevated" hover padding="lg" border="accent" className="h-full">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.bgColor} ${item.iconColor}`}>
+                            {IconComp && <IconComp className="w-5 h-5" aria-hidden="true" />}
+                            {!IconComp && (
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5" aria-hidden="true">
+                                {item.id === 'custom-solutions' && <><path d="M18 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" /><path d="M2 18h4a2 2 0 0 0 2 2v4a2 2 0 0 0-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" /><path d="M2 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" /><path d="M18 18h4a2 2 0 0 0 2 2v4a2 2 0 0 0-2 2h-4a2 2 0 0 0-2-2v-4a2 2 0 0 0 2-2z" /></>}
+                                {item.id === 'clean-code' && <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></>}
+                                {item.id === 'hw-sw-integration' && <><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 9h6M9 12h6M9 15h6" /></>}
+                              </svg>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <h3 className="font-heading font-bold text-heading-sm text-text-primary mb-2">{item.title}</h3>
-                      <p className="text-body-sm text-text-secondary">{item.description.slice(0, 60)}...</p>
-                    </GlassCard>
-                  </motion.article>
-                </StaggerItem>
-              ))}
+                        <h3 className="font-heading font-bold text-heading-sm text-text-primary mb-2">{item.title}</h3>
+                        <p className="text-body-sm text-text-secondary">{item.description.slice(0, 60)}...</p>
+                      </GlassCard>
+                    </motion.article>
+                  </StaggerItem>
+                );
+              })}
             </StaggerContainer>
           </ScrollReveal>
 
@@ -473,49 +657,52 @@ const Home = () => {
 
           <ScrollReveal distance={30} delay={0.1}>
             <StaggerContainer staggerDelay={0.08} className="max-w-3xl mx-auto space-y-4 mb-12">
-              {previewFAQs.map((faq, index) => (
-                <StaggerItem key={faq.id} delay={index * 0.05}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                  >
-                    <div
-                      className="p-6 rounded-2xl bg-bg-elevated/50 border border-border/30 hover:border-accent-gold/30 transition-all duration-300 cursor-pointer"
-                      onClick={() => toggleFAQ(index)}
-                      role="button"
-                      aria-expanded={openFAQ === index}
-                      tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter') toggleFAQ(index); }}
+              {previewFAQs.map((faq, index) => {
+                const isOpen = openFAQ === index;
+                return (
+                  <StaggerItem key={faq.id} delay={index * 0.05}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <h3 className="font-heading font-semibold text-heading-md text-text-primary pr-4">
-                          {faq.question}
-                        </h3>
-                        <motion.span
-                          className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-gold/10 flex items-center justify-center text-accent-gold"
-                          animate={{ rotate: openFAQ === index ? 180 : 0 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                            <path d="M6 9l6 6 6-6" />
-                          </svg>
-                        </motion.span>
+                      <div
+                        className="p-6 rounded-2xl bg-bg-elevated/50 border border-border/30 hover:border-accent-gold/30 transition-all duration-300 cursor-pointer"
+                        onClick={() => toggleFAQ(index)}
+                        role="button"
+                        aria-expanded={isOpen}
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === 'Enter') toggleFAQ(index); }}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <h3 className="font-heading font-semibold text-heading-md text-text-primary pr-4 text-balance">
+                            {faq.question}
+                          </h3>
+                          <motion.div
+                            className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-gold/10 flex items-center justify-center text-accent-gold"
+                            animate={{ rotate: isOpen ? 180 : 0 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                          >
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                              <path d="M6 9l6 6 6-6" />
+                            </svg>
+                          </motion.div>
+                        </div>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                            className="mt-4 pt-4 border-t border-border/30"
+                          >
+                            <p className="text-body text-text-secondary leading-relaxed">{faq.answer}</p>
+                          </motion.div>
+                        )}
                       </div>
-                      {openFAQ === index && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                          className="mt-4 pt-4 border-t border-border/30"
-                        >
-                          <p className="text-body text-text-secondary leading-relaxed">{faq.answer}</p>
-                        </motion.div>
-                      )}
-                    </div>
-                  </motion.div>
-                </StaggerItem>
-              ))}
+                    </motion.div>
+                  </StaggerItem>
+                );
+              })}
             </StaggerContainer>
           </ScrollReveal>
 
@@ -553,10 +740,10 @@ const Home = () => {
                 Ready to Build?
               </motion.span>
               <h2 className="font-heading font-bold text-display-md lg:text-display-lg text-text-primary mb-6 gradient-text">
-                Have an Electronics Idea?
+                Have an electronics idea?
               </h2>
               <p className="text-body-lg text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed">
-                Let's turn your idea into a working system. From prototype to production-ready hardware.
+                Tell us what you are trying to build or fix. We will review the requirements and get back to you with questions, clarifications, and a fair price estimate.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
@@ -565,7 +752,7 @@ const Home = () => {
                   as={Link}
                   to="/order"
                 >
-                  Start Your Project
+                  Start a project request
                 </Button>
                 <Button
                   variant="secondary"

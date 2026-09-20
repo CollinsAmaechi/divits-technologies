@@ -23,14 +23,15 @@ const Projects = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
           >
             <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
-            Featured Projects
+            Projects
           </motion.span>
           <h2 id="projects-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-            Selected Work
+            Concept / Demo Projects
           </h2>
           <p className="text-body-lg text-text-secondary">
-            Concept projects demonstrating ESP32, IoT, and embedded systems capabilities. Each project includes
-            custom hardware design, firmware development, and system integration.
+            These are demonstration projects built to prove concepts and explore technology.
+            They are concept and prototype work — not deployed client systems.
+            Each demonstrates capabilities in ESP32, IoT, and embedded systems development.
           </p>
         </ScrollReveal>
 

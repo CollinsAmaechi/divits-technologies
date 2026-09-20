@@ -9,8 +9,49 @@ import {
   HardDrive,
   GitBranch,
   Settings,
+  Bug,
+  Wrench,
+  Network,
+  Shield,
 } from 'lucide-react';
 
+// DIVITS service pillars
+export const servicePillars = [
+  {
+    id: 'divits-assist',
+    name: 'DIVITS Assist',
+    description: 'Coding, debugging, university and project assistance, electronics troubleshooting and technical guidance.',
+    icon: Bug,
+    color: 'gold',
+    services: ['esp32-development', 'arduino-development', 'embedded-programming', 'troubleshooting'],
+  },
+  {
+    id: 'divits-build',
+    name: 'DIVITS Build',
+    description: 'Custom software and hardware projects, Arduino and ESP32 systems, prototypes and technical builds.',
+    icon: Wrench,
+    color: 'amber',
+    services: ['custom-hardware', 'electronics-prototyping', 'relay-power-control', 'sensor-monitoring'],
+  },
+  {
+    id: 'divits-iot',
+    name: 'DIVITS IoT',
+    description: 'IoT systems, connected devices, MQTT, automation, monitoring and remote control.',
+    icon: Network,
+    color: 'orange',
+    services: ['iot-systems', 'smart-home-automation', 'wifi-bluetooth', 'sensor-monitoring'],
+  },
+  {
+    id: 'divits-home',
+    name: 'DIVITS Home',
+    description: 'Smart-home automation concepts and future installation services — lighting, fans, AC, sockets, power monitoring, generator/inverter integration and other Nigerian-home use cases.',
+    icon: Home,
+    color: 'yellow',
+    services: ['smart-home-automation', 'relay-power-control', 'sensor-monitoring'],
+  },
+];
+
+// Individual services (kept for Order form and service selection)
 export const services = [
   {
     id: 'esp32-development',
@@ -22,6 +63,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['FreeRTOS & ESP-IDF', 'Wi-Fi/Bluetooth/BLE', 'Deep Sleep & Power Mgmt', 'OTA Firmware Updates'],
     technologies: ['ESP-IDF', 'Arduino Core', 'PlatformIO', 'FreeRTOS'],
+    pillar: 'divits-assist',
   },
   {
     id: 'arduino-development',
@@ -33,6 +75,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Custom Libraries', 'Interrupt Handling', 'Real-time Control', 'Multi-board Support'],
     technologies: ['Arduino IDE', 'PlatformIO', 'AVR-GCC', 'ARM Cortex-M'],
+    pillar: 'divits-assist',
   },
   {
     id: 'iot-systems',
@@ -44,17 +87,19 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Cloud Integration', 'MQTT/HTTP/CoAP', 'Device Management', 'Real-time Dashboards'],
     technologies: ['AWS IoT', 'Azure IoT', 'MQTT', 'Node-RED', 'Grafana'],
+    pillar: 'divits-iot',
   },
   {
     id: 'smart-home-automation',
     title: 'Smart Home Automation',
-    description: 'Custom Home Assistant, ESPHome, and standalone automation systems. Lighting control, climate management, security, energy monitoring, and voice assistant integration.',
+    description: 'Smart-home automation concepts using Home Assistant, ESPHome, and standalone automation systems. Lighting control, climate management, security, energy monitoring, and voice assistant integration.',
     icon: Home,
     iconColor: 'text-accent-orange',
     bgColor: 'bg-accent-orange/10',
     borderColor: 'border-accent-orange/20',
     features: ['Home Assistant/ESPHome', 'Lighting & Climate', 'Security & Access', 'Energy Monitoring'],
     technologies: ['Home Assistant', 'ESPHome', 'Matter/Thread', 'Zigbee', 'Z-Wave'],
+    pillar: 'divits-home',
   },
   {
     id: 'sensor-monitoring',
@@ -66,6 +111,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Multi-sensor Fusion', 'Calibration Routines', 'Edge Processing', 'Alerting & Notifications'],
     technologies: ['I2C/SPI/1-Wire', 'ADC/DAC', 'Modbus', 'LoRaWAN'],
+    pillar: 'divits-build',
   },
   {
     id: 'relay-power-control',
@@ -77,6 +123,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['AC/DC Switching', 'Motor Control', 'PWM Dimming', 'Power Monitoring'],
     technologies: ['Relays', 'SSR', 'TRIAC', 'MOSFET', 'ACS712', 'INA219'],
+    pillar: 'divits-build',
   },
   {
     id: 'embedded-programming',
@@ -88,6 +135,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Memory Optimization', 'RTOS Development', 'Driver Development', 'Bootloaders'],
     technologies: ['C/C++', 'CMake', 'GDB', 'Valgrind', 'Cppcheck'],
+    pillar: 'divits-assist',
   },
   {
     id: 'wifi-bluetooth',
@@ -99,6 +147,7 @@ export const services = [
     borderColor: 'border-accent-orange/20',
     features: ['BLE Peripherals', 'Wi-Fi Mesh', 'ESP-NOW', 'Bluetooth Audio'],
     technologies: ['BLE 5.0', 'Wi-Fi 6', 'ESP-NOW', 'A2DP', 'GATT'],
+    pillar: 'divits-iot',
   },
   {
     id: 'electronics-prototyping',
@@ -110,6 +159,7 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Schematic Design', 'PCB Layout', 'BOM Management', 'Assembly & Testing'],
     technologies: ['KiCad', 'EasyEDA', 'JLCPCB', 'PCBWay', 'LCSC'],
+    pillar: 'divits-build',
   },
   {
     id: 'custom-hardware',
@@ -121,15 +171,28 @@ export const services = [
     borderColor: 'border-accent-gold/20',
     features: ['Concept to Prototype', 'Enclosure Design', 'Thermal Management', 'Compliance Prep'],
     technologies: ['Fusion 360', '3D Printing', 'CNC', 'Injection Molding'],
+    pillar: 'divits-build',
+  },
+  {
+    id: 'troubleshooting',
+    title: 'Troubleshooting & Debugging',
+    description: 'Debugging and troubleshooting services for hardware and firmware issues. Logic analyzer/oscilloscope analysis, firmware debugging via JTAG/SWD, schematic review, power consumption optimization, and intermittent failure root cause analysis.',
+    icon: Bug,
+    iconColor: 'text-accent-orange',
+    bgColor: 'bg-accent-orange/10',
+    borderColor: 'border-accent-orange/20',
+    features: ['Signal Analysis', 'Firmware Debugging', 'Schematic Review', 'Power Optimization', 'EMC Guidance'],
+    technologies: ['JTAG', 'SWD', 'Logic Analyzer', 'Oscilloscope', 'GDB'],
+    pillar: 'divits-assist',
   },
 ];
 
 export const serviceCategories = [
   { id: 'all', label: 'All Services' },
-  { id: 'firmware', label: 'Firmware', services: ['esp32-development', 'arduino-development', 'embedded-programming'] },
-  { id: 'iot', label: 'IoT & Connectivity', services: ['iot-systems', 'smart-home-automation', 'wifi-bluetooth'] },
-  { id: 'hardware', label: 'Hardware', services: ['electronics-prototyping', 'custom-hardware', 'relay-power-control'] },
-  { id: 'sensors', label: 'Sensors & Control', services: ['sensor-monitoring', 'relay-power-control'] },
+  { id: 'divits-assist', label: 'DIVITS Assist', services: ['esp32-development', 'arduino-development', 'embedded-programming', 'troubleshooting'] },
+  { id: 'divits-build', label: 'DIVITS Build', services: ['custom-hardware', 'electronics-prototyping', 'relay-power-control', 'sensor-monitoring'] },
+  { id: 'divits-iot', label: 'DIVITS IoT', services: ['iot-systems', 'smart-home-automation', 'wifi-bluetooth', 'sensor-monitoring'] },
+  { id: 'divits-home', label: 'DIVITS Home', services: ['smart-home-automation', 'relay-power-control', 'sensor-monitoring'] },
 ];
 
 export default services;

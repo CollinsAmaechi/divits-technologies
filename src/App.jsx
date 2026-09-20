@@ -11,6 +11,10 @@ const Process = lazy(() => import('./pages/Process'));
 const Contact = lazy(() => import('./pages/Contact'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const Order = lazy(() => import('./pages/Order'));
+const Assist = lazy(() => import('./pages/Assist'));
+const Build = lazy(() => import('./pages/Build'));
+const Iot = lazy(() => import('./pages/Iot'));
+const HomeAutomation = lazy(() => import('./pages/HomeAutomation'));
 
 function App() {
   return (
@@ -27,6 +31,10 @@ function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="faq" element={<FAQ />} />
             <Route path="order" element={<Order />} />
+            <Route path="assist" element={<Assist />} />
+            <Route path="build" element={<Build />} />
+            <Route path="iot" element={<Iot />} />
+            <Route path="home-automation" element={<HomeAutomation />} />
           </Route>
         </Routes>
       </Suspense>

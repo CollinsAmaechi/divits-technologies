@@ -14,7 +14,7 @@ export const projects = [
     ],
     thumbnail: '/placeholder-project.svg',
     isConcept: true,
-    conceptLabel: 'Concept Project',
+    conceptLabel: 'Concept / Demo',
     year: '2024',
     duration: '6 weeks',
     githubUrl: 'https://github.com/[YOUR_GITHUB]/iot-power-distribution',
@@ -55,7 +55,7 @@ export const projects = [
     ],
     thumbnail: '/placeholder-project.svg',
     isConcept: true,
-    conceptLabel: 'Concept Project',
+    conceptLabel: 'Concept / Demo',
     year: '2024',
     duration: '8 weeks',
     githubUrl: 'https://github.com/[YOUR_GITHUB]/esp32-sensor-mesh',
@@ -96,7 +96,7 @@ export const projects = [
     ],
     thumbnail: '/placeholder-project.svg',
     isConcept: true,
-    conceptLabel: 'Concept Project',
+    conceptLabel: 'Concept / Demo',
     year: '2024',
     duration: '10 weeks',
     githubUrl: 'https://github.com/[YOUR_GITHUB]/smart-automation-controller',
@@ -134,5 +134,12 @@ export const projectCategories = [
   'Smart Home',
   'Custom Hardware',
 ];
+
+// Project type labels for accurate presentation
+export const projectTypeLabels = {
+  concept: 'Concept / Demo',
+  prototype: 'Prototype',
+  simulation: 'Simulation / Demonstration',
+};
 
 export default projects;

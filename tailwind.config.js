@@ -16,10 +16,16 @@ export default {
           card: '#f5f2eb',              // Light cream
         },
         accent: {
-          gold: '#c9a84c',              // Muted gold
+          gold: '#c9a84c',              // Muted gold (DIVITS Assist)
           amber: '#d4a537',             // Soft gold/amber
           yellow: '#e8c547',            // Soft yellow
-          orange: '#d4903e',            // Warm orange
+          orange: '#d4903e',            // Warm orange (DIVITS Build)
+          iot: '#2d8f6f',               // Green/teal (DIVITS IoT)
+          iotLight: '#34a87d',          // Lighter green/teal
+          iotBg: '#eaf5ef',             // Very light green/teal bg
+          home: '#e05545',              // Coral/red-orange (DIVITS Home)
+          homeLight: '#f06b5b',         // Lighter coral
+          homeBg: '#fdeae8',            // Very light coral bg
         },
         text: {
           primary: '#1a1a1a',           // Near black (warm)
