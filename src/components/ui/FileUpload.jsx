@@ -1,8 +1,8 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Upload, X, File, CheckCircle, AlertCircle } from 'lucide-react';
 import { formatFileSize } from '../../utils/helpers';
 
-const FileUpload = ({
+const FileUpload = forwardRef(function FileUpload({
   label,
   hint,
   error,
@@ -15,11 +15,23 @@ const FileUpload = ({
   disabled = false,
   required = false,
   id,
-}) => {
+  name,
+  onBlur,
+}, forwardedRef) {
   const [files, setFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
-  const uploadId = id || `file-upload-${Math.random().toString(36).substr(2, 9)}`;
+  const stableIdRef = useRef(id || `file-upload-${Math.random().toString(36).substr(2, 9)}`);
+  const uploadId = stableIdRef.current;
+  const mergedRef = useCallback(
+    (node) => {
+      fileInputRef.current = node;
+      if (typeof forwardedRef === 'function') forwardedRef(node);
+      else if (forwardedRef) forwardedRef.current = node;
+    },
+    [forwardedRef]
+  );
+  useImperativeHandle(forwardedRef, () => fileInputRef.current, [fileInputRef]);
   const errorId = error ? `${uploadId}-error` : undefined;
 
   const validateFile = (file) => {
@@ -145,13 +157,15 @@ const FileUpload = ({
         aria-label={label || 'File upload'}
       >
         <input
-          ref={fileInputRef}
+          ref={mergedRef}
           type="file"
           id={uploadId}
+          name={name}
           accept={accept}
           multiple={multiple}
           disabled={disabled || isAtMax}
           onChange={handleChange}
+          onBlur={onBlur}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           aria-hidden="true"
         />
@@ -212,6 +226,6 @@ const FileUpload = ({
       )}
     </div>
   );
-};
+});
 
 export default FileUpload;

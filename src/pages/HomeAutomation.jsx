@@ -6,6 +6,7 @@ import { siteConfig } from '../config/siteConfig';
 import Button from '../components/ui/Button';
 import GlassCard from '../components/ui/GlassCard';
 import { Home, Lightbulb, Fan, Wind, Thermometer, Power, Shield, Wifi, Zap } from 'lucide-react';
+import PillarIllustration from '../components/illustrations/PillarIllustrations';
 
 const homeAutomationItems = [
   { icon: Lightbulb, title: 'Lighting Control', desc: 'Automated lighting schedules, dimming, color temperature, and scene presets for Nigerian homes.' },
@@ -21,8 +22,11 @@ const HomeAutomation = () => {
   return (
     <>
       {/* Hero */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden" aria-labelledby="hero-title">
+      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden pillar-home-overlay grid-pattern" aria-labelledby="hero-title">
         <div className="absolute inset-0 bg-gradient-to-b from-accent-home/5 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(224,85,69,0.08),transparent_50%)]" aria-hidden="true" />
+        <img src="/images/divits/smart-home.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" aria-hidden="true" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-home/10 via-transparent to-transparent" aria-hidden="true" />
         <div className="section-container relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="text-center lg:text-left">
@@ -33,9 +37,14 @@ const HomeAutomation = () => {
                 </span>
               </ScrollReveal>
               <ScrollReveal delay={0.2} distance={15}>
-                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-6 leading-tight">
-                  Smart homes, designed for Nigeria.
+                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-3 leading-tight">
+                  DIVITS Home
                 </h1>
+              </ScrollReveal>
+              <ScrollReveal delay={0.25} distance={15}>
+                <p className="font-heading font-bold text-heading-lg text-accent-home mb-6 leading-tight">
+                  Nigerian homes, reimagined
+                </p>
               </ScrollReveal>
               <ScrollReveal delay={0.3} distance={15}>
                 <p className="text-body-lg lg:text-body text-text-secondary mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -81,10 +90,59 @@ const HomeAutomation = () => {
               </ScrollReveal>
             </div>
             <ScrollReveal distance={15}>
-              <div className="relative aspect-square max-w-md mx-auto">
-                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-accent-homeBg to-bg-elevated/50 border border-accent-home/20 flex items-center justify-center">
-                  <Home className="w-24 h-24 text-accent-home/40" aria-hidden="true" />
+              <div className="relative aspect-square max-w-md mx-auto animate-float">
+                <div className="w-full h-full rounded-3xl bg-gradient-to-br from-accent-home/15 to-accent-home/5 border border-accent-home/20 shadow-lg shadow-accent-home/10 flex items-center justify-center backdrop-blur-sm">
+                  <PillarIllustration pillarId="home" color="#e05545" size={240} />
                 </div>
+                <div className="absolute inset-0 rounded-3xl border border-accent-home/10 -z-10" aria-hidden="true" />
+                <div className="absolute -inset-4 rounded-3xl border border-accent-home/5 -z-10" aria-hidden="true" />
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Smart Home Visual */}
+      <section id="home-visual" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="home-visual-title">
+        <div className="absolute inset-0" aria-hidden="true" />
+        <img src="/images/divits/smart-home.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.03]" aria-hidden="true" loading="lazy" />
+        <div className="section-container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <ScrollReveal distance={40} className="relative">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-home/20 shadow-lg shadow-accent-home/10">
+                <img src="/images/divits/smart-home.jpg" alt="Smart home automation" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-home/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-home/20 border border-accent-home/30 text-accent-home text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-home" aria-hidden="true" />
+                    Smart Home Concept
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal distance={40} delay={0.1}>
+              <div>
+                <ScrollReveal distance={30} className="text-center lg:text-left mb-8">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-homeBg border border-accent-home/20 text-accent-home text-caption font-medium mb-4">
+                    <span className="w-2 h-2 rounded-full bg-accent-home" aria-hidden="true" />
+                    Visual Preview
+                  </span>
+                  <h2 id="home-visual-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+                    Your home, reimagined
+                  </h2>
+                  <p className="text-body-lg text-text-secondary">
+                    Smart-home automation concepts tailored for Nigerian homes — from lighting and climate to generator integration.
+                  </p>
+                </ScrollReveal>
+                <ScrollReveal distance={30} delay={0.2}>
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-accent-home/5 border border-accent-home/10">
+                    <svg className="w-6 h-6 text-accent-home flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 3v14M16 3v14M2 9h20" /></svg>
+                    <div>
+                      <p className="font-heading font-semibold text-body text-text-primary">Concept & Prototype</p>
+                      <p className="text-body-sm text-text-secondary">Available now</p>
+                    </div>
+                  </div>
+                </ScrollReveal>
               </div>
             </ScrollReveal>
           </div>

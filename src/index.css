@@ -147,6 +147,176 @@
   }
 }
 
+/* Pillar-specific gradient overlays */
+.pillar-blue-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+}
+
+.pillar-orange-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 144, 62, 0.18) 0%, transparent 70%);
+}
+
+.pillar-iot-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(45, 143, 111, 0.18) 0%, transparent 70%);
+}
+
+.pillar-home-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(224, 85, 69, 0.08) 0%, transparent 70%);
+}
+
+.pillar-gold-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 168, 76, 0.12) 0%, transparent 70%);
+}
+
+/* Page-specific overlays */
+.pillar-blue-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+}
+
+.pillar-orange-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 144, 62, 0.1) 0%, transparent 70%);
+}
+
+.pillar-iot-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(45, 143, 111, 0.1) 0%, transparent 70%);
+}
+
+.pillar-home-overlay {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(224, 85, 69, 0.1) 0%, transparent 70%);
+}
+
+/* Decorative grid pattern */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(229, 224, 213, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 224, 213, 0.4) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Animated grid - subtle moving dots */
+.grid-animated {
+  background-image:
+    radial-gradient(rgba(201, 168, 76, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(229, 224, 213, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 224, 213, 0.3) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 60px 60px;
+  background-position: 0 0, 0 0, 0 0;
+}
+
+/* Data flow animation */
+@keyframes data-flow {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+.flow-dot {
+  offset-rotation: 0deg;
+  animation: data-flow 3s linear infinite;
+}
+
+/* Diagnostic scan-line for Assist page */
+@keyframes diagnostic-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.diagnostic-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(37, 99, 235, 0.05) 50%, transparent 100%);
+  animation: diagnostic-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Scan-line for Build page */
+@keyframes heat-shimmer {
+  0% { opacity: 0; transform: translateX(-100%); }
+  50% { opacity: 0.3; }
+  100% { opacity: 0; transform: translateX(100%); }
+}
+
+.heat-shimmer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(to right, transparent, rgba(212, 144, 62, 0.06), transparent);
+  animation: heat-shimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Glow ring pulse */
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(201, 168, 76, 0.2); }
+}
+
+.glow-pulse {
+  animation: glow-ring 4s ease-in-out infinite;
+}
+
+/* Decorative radial glow */
+.radial-glow {
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+}
+
+/* Animated pulse for accent elements */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Subtle floating animation with more gentle movement */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33% { transform: translateY(-4px) translateX(1px); }
+  66% { transform: translateY(-2px) translateX(-1px); }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 10s ease-in-out infinite;
+}
+
+/* Animated grid pattern */
+@keyframes grid-pattern-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+
+.grid-pattern-animated {
+  background-image:
+    radial-gradient(circle, rgba(201, 168, 76, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(201, 168, 76, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px, 60px 60px, 60px 60px;
+  background-position: 0 0, 0 0, 0 0;
+  animation: grid-pattern-drift 20s linear infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.06; }
+  50% { opacity: 0.12; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

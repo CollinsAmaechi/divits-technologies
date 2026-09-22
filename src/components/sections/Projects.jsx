@@ -4,6 +4,13 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from '../common/ScrollRev
 import { projects } from '../../data/projects';
 import GlassCard from '../ui/GlassCard';
 import Button from '../ui/Button';
+import PillarIllustration from '../illustrations/PillarIllustrations';
+
+const projectImages = {
+  'iot-power-distribution': '/images/divits/projects-pcb.jpg',
+  'esp32-sensor-system': '/images/divits/projects-robotics.jpg',
+  'smart-automation-controller': '/images/divits/Projects.jpg',
+};
 
 
 
@@ -26,23 +33,31 @@ const Projects = () => {
     >
       {/* Background */}
       <div className="absolute inset-0" aria-hidden="true">
+        <img src="/images/divits/Projects.jpg" alt="" className="w-full h-full object-cover opacity-[0.04]" loading="lazy" />
       </div>
 
       <div className="section-container relative z-10">
-        {/* Section Header */}
-        <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
-          >
-            <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
-            Featured Projects
-          </motion.span>
-          <h2 id="projects-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
-            Selected Work
-          </h2>
+        {/* Section Illustration */}
+      <ScrollReveal distance={30} className="flex justify-center mb-8">
+        <div className="w-56 h-56 opacity-75">
+          <PillarIllustration pillarId="projects" color="#c9a84c" />
+        </div>
+      </ScrollReveal>
+
+      {/* Section Header */}
+      <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
+        <motion.span
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-caption font-medium mb-4"
+        >
+          <span className="w-2 h-2 rounded-full bg-accent-gold" aria-hidden="true" />
+          Featured Projects
+        </motion.span>
+        <h2 id="projects-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+          Selected Work
+        </h2>
           <p className="text-body-lg text-text-secondary">
             Concept projects demonstrating ESP32, IoT, and embedded systems capabilities. Each project includes
             custom hardware design, firmware development, and system integration.
@@ -71,10 +86,18 @@ const Projects = () => {
                   >
                     {/* Project Image */}
                     <div className="relative aspect-video overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-bg-elevated to-bg-secondary" />
-                      <div className="absolute inset-0 flex items-center justify-center relative z-10">
+                      <img
+                        src={projectImages[project.id] || '/images/divits/projects-hero.jpg'}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-bg-primary/60 via-bg-primary/30 to-bg-primary/20" aria-hidden="true" />
+
+                      {/* Technical SVG accent (smaller, overlaid on image) */}
+                      <div className="absolute top-4 right-4 z-10">
                         <svg
-                          className="w-32 h-32 text-border-light"
+                          className="w-10 h-10 text-border-light/60"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"

@@ -90,7 +90,7 @@ const Order = () => {
   // Determine pillar context for visual indicator
   const pillarContext = searchParams.get('pillar');
   const pillarLabels = {
-    assist: { label: 'DIVITS Assist', color: 'amber' },
+    assist: { label: 'DIVITS Assist', color: 'blue' },
     build: { label: 'DIVITS Build', color: 'orange' },
     iot: { label: 'DIVITS IoT', color: 'iot' },
     home: { label: 'DIVITS Home', color: 'home' },
@@ -331,6 +331,7 @@ const Order = () => {
       aria-labelledby="order-title"
     >
       <div className="absolute inset-0" aria-hidden="true" />
+      <img src="/images/divits/order-hardware.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.04]" aria-hidden="true" loading="lazy" />
       <div className="section-container relative z-10">
         <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
           <motion.span

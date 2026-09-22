@@ -2,20 +2,22 @@ import { motion } from 'framer-motion';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '../components/common/ScrollReveal';
 import { servicePillars, services } from '../data/services';
 import { siteConfig } from '../config/siteConfig';
+import PillarIllustration from '../components/illustrations/PillarIllustrations';
 import GlassCard from '../components/ui/GlassCard';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 
 const pillarConfig = {
-  amber: {
-    bg: 'bg-accent-amber/5',
-    border: 'border-accent-amber/20',
-    hoverBorder: 'hover:border-accent-amber/50',
-    iconBg: 'bg-accent-amber/10',
-    iconColor: 'text-accent-amber',
-    glowColor: 'amber',
-    badgeClass: 'bg-accent-amber/10 border-accent-amber/20 text-accent-amber',
+  blue: {
+    bg: 'bg-accent-blue/5',
+    border: 'border-accent-blue/20',
+    hoverBorder: 'hover:border-accent-blue/50',
+    iconBg: 'bg-accent-blue/10',
+    iconColor: 'text-accent-blue',
+    glowColor: 'blue',
+    badgeClass: 'bg-accent-blue/10 border-accent-blue/20 text-accent-blue',
     btnVariant: 'outline',
+    hex: '#2563eb',
   },
   orange: {
     bg: 'bg-accent-orange/5',
@@ -26,16 +28,7 @@ const pillarConfig = {
     glowColor: 'yellow',
     badgeClass: 'bg-accent-orange/10 border-accent-orange/20 text-accent-orange',
     btnVariant: 'outline',
-  },
-  iot: {
-    bg: 'bg-accent-iotBg',
-    border: 'border-accent-iot/20',
-    hoverBorder: 'hover:border-accent-iot/50',
-    iconBg: 'bg-accent-iot/10',
-    iconColor: 'text-accent-iot',
-    glowColor: 'gold',
-    badgeClass: 'bg-accent-iotBg border-accent-iot/20 text-accent-iot',
-    btnVariant: 'outline',
+    hex: '#d4903e',
   },
   home: {
     bg: 'bg-accent-homeBg',
@@ -46,7 +39,35 @@ const pillarConfig = {
     glowColor: 'amber',
     badgeClass: 'bg-accent-homeBg border-accent-home/20 text-accent-home',
     btnVariant: 'outline',
+    hex: '#e05545',
   },
+  iot: {
+    bg: 'bg-accent-iotBg',
+    border: 'border-accent-iot/20',
+    hoverBorder: 'hover:border-accent-iot/50',
+    iconBg: 'bg-accent-iot/10',
+    iconColor: 'text-accent-iot',
+    glowColor: 'iot',
+    badgeClass: 'bg-accent-iotBg border-accent-iot/20 text-accent-iot',
+    btnVariant: 'outline',
+    hex: '#2d8f6f',
+  },
+  gold: {
+    bg: 'bg-accent-gold/5',
+    border: 'border-accent-gold/20',
+    hoverBorder: 'hover:border-accent-gold/50',
+    iconBg: 'bg-accent-gold/10',
+    iconColor: 'text-accent-gold',
+    glowColor: 'gold',
+    badgeClass: 'bg-accent-gold/10 border-accent-gold/20 text-accent-gold',
+    btnVariant: 'outline',
+    hex: '#c9a84c',
+  },
+};
+
+const pillarLabel = (pillarId) => {
+  const pillar = Object.values(siteConfig.pillars).find((p) => p.id === pillarId);
+  return pillar ? pillar.name : pillarId;
 };
 
 const Services = () => {
@@ -97,6 +118,13 @@ const Services = () => {
                       border="accent"
                       className={`h-full flex flex-col ${config.hoverBorder}`}
                     >
+                      <div className="relative h-32 flex items-center justify-center mb-4 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                        <PillarIllustration
+                          pillarId={pillar.id === 'divits-assist' ? 'assist' : pillar.id === 'divits-build' ? 'build' : pillar.id === 'divits-iot' ? 'iot' : 'home'}
+                          color={config.hex}
+                          size={120}
+                        />
+                      </div>
                       <div className={`w-14 h-14 rounded-2xl ${config.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
                         <span className={`font-heading font-bold ${config.iconColor} text-display-sm`}>
                           {index + 1}
@@ -111,14 +139,14 @@ const Services = () => {
                       <ul className="space-y-2 mb-6" aria-label={`${pillar.name} services`}>
                         {pillarServices.map((service) => (
                           <li key={service.id} className="flex items-center gap-2 text-body-sm text-text-secondary">
-                            <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--tw-accent-gold)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                            <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                               <path d="M20 6L9 17l-5-5" />
                             </svg>
                             {service.title}
                           </li>
                         ))}
                       </ul>
-                      <Button variant={config.btnVariant} className="w-full mt-auto" as={Link} to={`/order?pillar=${pillar.id.split('-')[1]}`}>
+                      <Button variant={config.btnVariant} className="w-full mt-auto" as={Link} to={`/${pillar.id === 'divits-assist' ? 'assist' : pillar.id === 'divits-build' ? 'build' : pillar.id === 'divits-iot' ? 'iot' : 'home-automation'}`}>
                         Browse {pillar.name}
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                       </Button>
@@ -129,6 +157,13 @@ const Services = () => {
             })}
           </StaggerContainer>
         </ScrollReveal>
+
+        {/* Decorative Divider */}
+        <div className="flex items-center justify-center gap-4 my-16" aria-hidden="true">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-accent-blue/30 to-transparent" />
+          <div className="w-2 h-2 rounded-full bg-accent-gold" />
+          <div className="h-px flex-1 bg-gradient-to-l from-transparent via-accent-orange/30 to-transparent" />
+        </div>
 
         <ScrollReveal distance={20} delay={0.3} className="mt-16 text-center">
           <p className="text-body-lg text-text-secondary mb-6">
@@ -147,7 +182,7 @@ const Services = () => {
           </h3>
           <StaggerContainer staggerDelay={0.05} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {services.map((service, index) => {
-              const config = pillarConfig[service.pillar === 'divits-assist' ? 'amber' : service.pillar === 'divits-build' ? 'orange' : service.pillar === 'divits-iot' ? 'iot' : 'home'];
+              const config = pillarConfig[service.pillar === 'divits-assist' ? 'blue' : service.pillar === 'divits-build' ? 'orange' : service.pillar === 'divits-iot' ? 'iot' : 'home'];
               return (
                 <StaggerItem key={service.id} delay={index * 0.03}>
                   <motion.article
@@ -163,8 +198,20 @@ const Services = () => {
                       border="accent"
                       className={`h-full flex flex-col ${config.hoverBorder}`}
                     >
-                      <div className={`w-10 h-10 rounded-xl ${service.bgColor} ${service.borderColor} ${service.iconColor} flex items-center justify-center mb-4`}>
-                        <service.icon className="w-5 h-5" aria-hidden="true" />
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-10 h-10 rounded-xl ${service.bgColor} ${service.borderColor} ${service.iconColor} flex items-center justify-center`}>
+                          <service.icon className="w-5 h-5" aria-hidden="true" />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className="w-2 h-2 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: config.hex }}
+                            aria-hidden="true"
+                          />
+                          <span className={`text-caption font-medium ${config.iconColor}`}>
+                            {pillarLabel(service.pillar)}
+                          </span>
+                        </div>
                       </div>
                       <h4 className="font-heading font-bold text-heading-md text-text-primary mb-2">
                         {service.title}

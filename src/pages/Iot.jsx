@@ -6,6 +6,7 @@ import { siteConfig } from '../config/siteConfig';
 import Button from '../components/ui/Button';
 import GlassCard from '../components/ui/GlassCard';
 import { Wifi, Network, Cloud, Thermometer, LayoutDashboard, Radio, Cpu, Router } from 'lucide-react';
+import PillarIllustration from '../components/illustrations/PillarIllustrations';
 
 const iotServices = [
   { icon: Wifi, title: 'IoT Systems', desc: 'End-to-end IoT design — device firmware, cloud connectivity, MQTT/HTTP/CoAP protocols.' },
@@ -20,8 +21,11 @@ const Iot = () => {
   return (
     <>
       {/* Hero */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden" aria-labelledby="hero-title">
+      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden pillar-iot-overlay grid-pattern" aria-labelledby="hero-title">
         <div className="absolute inset-0 bg-gradient-to-b from-accent-iot/5 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(45,143,111,0.08),transparent_50%)]" aria-hidden="true" />
+        <img src="/images/divits/iot-hero.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" aria-hidden="true" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-iot/10 via-transparent to-transparent" aria-hidden="true" />
         <div className="section-container relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="text-center lg:text-left">
@@ -32,9 +36,14 @@ const Iot = () => {
                 </span>
               </ScrollReveal>
               <ScrollReveal delay={0.2} distance={15}>
-                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-6 leading-tight">
-                  Connected devices that work.
+                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-3 leading-tight">
+                  DIVITS IoT
                 </h1>
+              </ScrollReveal>
+              <ScrollReveal delay={0.25} distance={15}>
+                <p className="font-heading font-bold text-heading-lg text-accent-iot mb-6 leading-tight">
+                  Everything connected, everywhere
+                </p>
               </ScrollReveal>
               <ScrollReveal delay={0.3} distance={15}>
                 <p className="text-body-lg lg:text-body text-text-secondary mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -75,10 +84,65 @@ const Iot = () => {
               </ScrollReveal>
             </div>
             <ScrollReveal distance={15}>
-              <div className="relative aspect-square max-w-md mx-auto">
-                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-accent-iotBg to-bg-elevated/50 border border-accent-iot/20 flex items-center justify-center">
-                  <Network className="w-24 h-24 text-accent-iot/40" aria-hidden="true" />
+              <div className="relative aspect-square max-w-md mx-auto animate-float">
+                <div className="w-full h-full rounded-3xl bg-gradient-to-br from-accent-iot/15 to-accent-iot/5 border border-accent-iot/20 shadow-lg shadow-accent-iot/10 flex items-center justify-center backdrop-blur-sm">
+                  <PillarIllustration pillarId="iot" color="#2d8f6f" size={240} />
                 </div>
+                <div className="absolute inset-0 rounded-3xl border border-accent-iot/10 -z-10" aria-hidden="true" />
+                <div className="absolute -inset-4 rounded-3xl border border-accent-iot/5 -z-10" aria-hidden="true" />
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Connected Systems Visual */}
+      <section id="iot-visual" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="iot-visual-title">
+        <div className="absolute inset-0" aria-hidden="true" />
+        <img src="/images/divits/IoT.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.03]" aria-hidden="true" loading="lazy" />
+        <div className="section-container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <ScrollReveal distance={40} className="relative order-2 lg:order-1">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-iot/20 shadow-lg shadow-accent-iot/10">
+                <img src="/images/divits/IoT.jpg" alt="Connected IoT systems" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-iot/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-iot/20 border border-accent-iot/30 text-accent-iot text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-iot" aria-hidden="true" />
+                    Connected Systems
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal distance={40} delay={0.1} className="order-1 lg:order-2">
+              <div>
+                <ScrollReveal distance={30} className="text-center lg:text-left mb-8">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-iot/10 border border-accent-iot/20 text-accent-iot text-caption font-medium mb-4">
+                    <span className="w-2 h-2 rounded-full bg-accent-iot" aria-hidden="true" />
+                    Device to Dashboard
+                  </span>
+                  <h2 id="iot-visual-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+                    Devices → Sensors → Network → Data → Automation
+                  </h2>
+                  <p className="text-body-lg text-text-secondary">
+                    End-to-end IoT design — from a single sensor node to a full cloud-connected network.
+                  </p>
+                </ScrollReveal>
+                <ScrollReveal distance={30} delay={0.2}>
+                  <div className="space-y-4">
+                    {[
+                      { label: 'MQTT', desc: 'Lightweight messaging' },
+                      { label: 'ESP-NOW', desc: 'Peer-to-peer mesh' },
+                      { label: 'LoRaWAN', desc: 'Long-range LPWAN' },
+                      { label: 'Cloud', desc: 'AWS, Azure, GCP' },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center gap-3 p-3 rounded-xl bg-accent-iot/5 border border-accent-iot/10">
+                        <span className="font-heading font-bold text-accent-iot text-body-sm">{item.label}</span>
+                        <span className="text-body-sm text-text-secondary">{item.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollReveal>
               </div>
             </ScrollReveal>
           </div>
@@ -142,6 +206,58 @@ const Iot = () => {
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Button>
           </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Hardware & PCB */}
+      <section id="iot-hardware" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="iot-hardware-title">
+        <div className="absolute inset-0" aria-hidden="true" />
+        <img src="/images/divits/build-pcb.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.03]" aria-hidden="true" loading="lazy" />
+        <div className="section-container relative z-10">
+          <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-iot/10 border border-accent-iot/20 text-accent-iot text-caption font-medium mb-4"
+            >
+              <span className="w-2 h-2 rounded-full bg-accent-iot" aria-hidden="true" />
+              Embedded Hardware
+            </motion.span>
+            <h2 id="iot-hardware-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
+              ESP32 and edge devices
+            </h2>
+            <p className="text-body-lg text-text-secondary">
+              From ESP32-based sensor nodes to edge computing gateways — we build the hardware that connects your world.
+            </p>
+          </ScrollReveal>
+
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <ScrollReveal distance={40} className="relative">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-iot/20 shadow-lg shadow-accent-iot/10">
+                <img src="/images/divits/home-esp32.jpg" alt="ESP32 embedded development" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-iot/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-iot/20 border border-accent-iot/30 text-accent-iot text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-iot" aria-hidden="true" />
+                    ESP32 Development
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal distance={40} delay={0.1}>
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-iot/20 shadow-lg shadow-accent-iot/10">
+                <img src="/images/divits/build-pcb.jpg" alt="PCB design for IoT" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-iot/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-iot/20 border border-accent-iot/30 text-accent-iot text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-iot" aria-hidden="true" />
+                    PCB Design
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 

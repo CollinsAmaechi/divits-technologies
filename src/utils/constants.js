@@ -11,6 +11,51 @@ export const NAV_LINKS = [
   { href: '/faq', label: 'FAQ' },
 ];
 
+export const PILLARS = [
+  {
+    id: 'divits-assist',
+    label: 'DIVITS Assist',
+    href: '/assist',
+    color: 'blue',
+    hex: '#2563eb',
+    description: 'Code debugging, firmware help, and technical guidance',
+    icon: 'bug',
+  },
+  {
+    id: 'divits-build',
+    label: 'DIVITS Build',
+    href: '/build',
+    color: 'orange',
+    hex: '#d4903e',
+    description: 'Custom hardware, ESP32, Arduino, and PCB prototyping',
+    icon: 'wrench',
+  },
+  {
+    id: 'divits-iot',
+    label: 'DIVITS IoT',
+    href: '/iot',
+    color: 'iot',
+    hex: '#2d8f6f',
+    description: 'Connected devices, sensors, networks, and automation',
+    icon: 'network',
+  },
+  {
+    id: 'divits-home',
+    label: 'DIVITS Home',
+    href: '/home-automation',
+    color: 'home',
+    hex: '#e05545',
+    description: 'Smart-home automation for Nigerian homes',
+    icon: 'home',
+  },
+];
+
+export const BRAND = {
+  color: 'gold',
+  hex: '#c9a84c',
+  name: 'DIVITS Technologies',
+};
+
 export const PROJECT_TYPES = [
   { value: 'esp32', label: 'ESP32 Development' },
   { value: 'arduino', label: 'Arduino Development' },

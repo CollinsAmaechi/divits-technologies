@@ -77,7 +77,8 @@ export const siteConfig = {
       id: 'divits-assist',
       name: 'DIVITS Assist',
       description: 'Coding, debugging, university and project assistance, electronics troubleshooting and technical guidance.',
-      color: 'amber',
+      color: 'blue',
+      hex: '#2563eb',
       icon: 'help',
     },
     build: {
@@ -85,6 +86,7 @@ export const siteConfig = {
       name: 'DIVITS Build',
       description: 'Custom software and hardware projects, Arduino and ESP32 systems, prototypes and technical builds.',
       color: 'orange',
+      hex: '#d4903e',
       icon: 'hammer',
     },
     iot: {
@@ -92,6 +94,7 @@ export const siteConfig = {
       name: 'DIVITS IoT',
       description: 'IoT systems, connected devices, MQTT, automation, monitoring and remote control.',
       color: 'iot',
+      hex: '#2d8f6f',
       icon: 'network',
     },
     home: {
@@ -99,8 +102,16 @@ export const siteConfig = {
       name: 'DIVITS Home',
       description: 'Smart-home automation concepts and future installation services — lighting, fans, AC, sockets, power monitoring, generator/inverter integration and other Nigerian-home use cases.',
       color: 'home',
+      hex: '#e05545',
       icon: 'home',
     },
+  },
+
+  // Brand identity
+  brand: {
+    color: 'gold',
+    hex: '#c9a84c',
+    name: 'DIVITS Technologies',
   },
 
   // Form Configuration

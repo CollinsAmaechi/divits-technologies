@@ -6,6 +6,7 @@ import { siteConfig } from '../config/siteConfig';
 import Button from '../components/ui/Button';
 import GlassCard from '../components/ui/GlassCard';
 import { Bug, Code, Wrench, GraduationCap, Wifi, HardDrive, Terminal, Search } from 'lucide-react';
+import PillarIllustration from '../components/illustrations/PillarIllustrations';
 
 const assistServices = [
   { icon: Code, title: 'Code Debugging', desc: 'Firmware bugs, logic errors, compilation failures. We find and fix what is not working.' },
@@ -20,21 +21,29 @@ const Assist = () => {
   return (
     <>
       {/* Hero */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden" aria-labelledby="hero-title">
-        <div className="absolute inset-0 bg-gradient-to-b from-accent-amber/5 via-transparent to-transparent" aria-hidden="true" />
+      <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 lg:pt-24 overflow-hidden pillar-blue-overlay grid-pattern" aria-labelledby="hero-title">
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-blue/5 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(37,99,235,0.08),transparent_50%)]" aria-hidden="true" />
+        <img src="/images/divits/Assist.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" aria-hidden="true" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-blue/10 via-transparent to-transparent" aria-hidden="true" />
         <div className="section-container relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="text-center lg:text-left">
               <ScrollReveal delay={0.1} distance={15}>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-amber/10 border border-accent-amber/20 text-accent-amber text-caption font-medium mb-6">
-                  <span className="w-2 h-2 rounded-full bg-accent-amber" aria-hidden="true" />
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-blue/10 border border-accent-blue/20 text-accent-blue text-caption font-medium mb-6">
+                  <span className="w-2 h-2 rounded-full bg-accent-blue" aria-hidden="true" />
                   DIVITS Assist
                 </span>
               </ScrollReveal>
               <ScrollReveal delay={0.2} distance={15}>
-                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-6 leading-tight">
-                  Stuck on a project?
+                <h1 id="hero-title" className="font-heading font-bold text-display-xl text-text-primary mb-3 leading-tight">
+                  DIVITS Assist
                 </h1>
+              </ScrollReveal>
+              <ScrollReveal delay={0.25} distance={15}>
+                <p className="font-heading font-bold text-heading-lg text-accent-gold mb-6 leading-tight">
+                  We've got you covered
+                </p>
               </ScrollReveal>
               <ScrollReveal delay={0.3} distance={15}>
                 <p className="text-body-lg lg:text-body text-text-secondary mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -67,7 +76,7 @@ const Assist = () => {
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 md:gap-4">
                   {['Code Debugging', 'ESP32', 'Arduino', 'Troubleshooting', 'University Projects'].map((skill) => (
                     <div key={skill} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-elevated/50 border border-border/30">
-                      <span className="w-2 h-2 rounded-full bg-accent-amber" aria-hidden="true" />
+                      <span className="w-2 h-2 rounded-full bg-accent-blue" aria-hidden="true" />
                       <span className="font-heading font-medium text-body-sm text-text-primary">{skill}</span>
                     </div>
                   ))}
@@ -75,9 +84,51 @@ const Assist = () => {
               </ScrollReveal>
             </div>
             <ScrollReveal distance={15}>
-              <div className="relative aspect-square max-w-md mx-auto">
-                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-accent-amber/10 to-accent-amber/5 border border-accent-amber/20 flex items-center justify-center">
-                  <Bug className="w-24 h-24 text-accent-amber/40" aria-hidden="true" />
+              <div className="relative aspect-square max-w-md mx-auto animate-float">
+                <div className="w-full h-full rounded-3xl bg-gradient-to-br from-accent-blue/15 to-accent-blue/5 border border-accent-blue/20 shadow-lg shadow-accent-blue/10 flex items-center justify-center backdrop-blur-sm">
+                  <PillarIllustration pillarId="assist" color="#2563eb" size={240} />
+                </div>
+                <div className="absolute inset-0 rounded-3xl border border-accent-blue/10 -z-10" aria-hidden="true" />
+                <div className="absolute -inset-4 rounded-3xl border border-accent-blue/5 -z-10" aria-hidden="true" />
+                {/* Golden accent line and badge at bottom of illustration */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" aria-hidden="true">
+                  <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-accent-gold to-transparent" />
+                  <span className="px-3 py-0.5 rounded-full bg-accent-gold/10 border border-accent-gold/30 text-accent-gold text-caption font-heading font-medium">
+                    SUPPORT
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Split: Coding & Circuit */}
+      <section id="assist-visual" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="assist-visual-title">
+        <div className="absolute inset-0" aria-hidden="true" />
+        <div className="section-container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <ScrollReveal distance={40} className="relative">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-blue/20 shadow-lg shadow-accent-blue/10">
+                <img src="/images/divits/Code-asssit.jpg" alt="Code debugging and development" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-blue/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-blue/20 border border-accent-blue/30 text-accent-blue text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" aria-hidden="true" />
+                    Code Debugging
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal distance={40} delay={0.1}>
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-accent-blue/20 shadow-lg shadow-accent-blue/10">
+                <img src="/images/divits/about-circuit.jpg" alt="Electronics troubleshooting" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-accent-blue/20 to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-blue/20 border border-accent-blue/30 text-accent-blue text-caption font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" aria-hidden="true" />
+                    Electronics Troubleshooting
+                  </span>
                 </div>
               </div>
             </ScrollReveal>
@@ -88,15 +139,26 @@ const Assist = () => {
       {/* What We Can Help With */}
       <section id="assist-services" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="assist-services-title">
         <div className="absolute inset-0" aria-hidden="true" />
+        {/* Decorative accent elements */}
+        <div className="absolute top-0 left-1/4 w-px h-20 bg-accent-blue/30" aria-hidden="true" />
+        <div className="absolute top-16 right-1/4 w-3 h-3 rounded-full bg-accent-blue/20" aria-hidden="true" />
+        <div className="absolute bottom-0 right-1/3 w-px h-16 bg-accent-blue/20" aria-hidden="true" />
+        <div className="absolute top-1/2 left-0 w-2 h-2 rounded-full bg-accent-blue/15" aria-hidden="true" />
         <div className="section-container relative z-10">
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center gap-4 mb-16" aria-hidden="true">
+            <div className="w-12 h-px bg-accent-blue/30" />
+            <div className="w-2 h-2 rounded-full bg-accent-blue/50" />
+            <div className="w-12 h-px bg-accent-blue/30" />
+          </div>
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-amber/10 border border-accent-amber/20 text-accent-amber text-caption font-medium mb-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-blue/10 border border-accent-blue/20 text-accent-blue text-caption font-medium mb-4"
             >
-              <span className="w-2 h-2 rounded-full bg-accent-amber" aria-hidden="true" />
+              <span className="w-2 h-2 rounded-full bg-accent-blue" aria-hidden="true" />
               What We Can Help With
             </motion.span>
             <h2 id="assist-services-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
@@ -120,8 +182,8 @@ const Assist = () => {
                       className="group"
                     >
                       <GlassCard variant="elevated" hover padding="lg" border="accent" className="h-full">
-                        <div className="w-12 h-12 rounded-xl bg-accent-amber/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-6 h-6 text-accent-amber" aria-hidden="true" />
+                        <div className="w-12 h-12 rounded-xl bg-accent-blue/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                          <Icon className="w-6 h-6 text-accent-blue" aria-hidden="true" />
                         </div>
                         <h3 className="font-heading font-bold text-heading-md text-text-primary mb-2">{item.title}</h3>
                         <p className="text-body text-text-secondary leading-relaxed">{item.desc}</p>
@@ -148,15 +210,25 @@ const Assist = () => {
       {/* How Assistance Works */}
       <section id="assist-process" className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="assist-process-title">
         <div className="absolute inset-0" aria-hidden="true" />
+        {/* Decorative accent elements */}
+        <div className="absolute top-0 right-1/4 w-px h-16 bg-accent-blue/30" aria-hidden="true" />
+        <div className="absolute top-16 left-1/3 w-2 h-2 rounded-full bg-accent-blue/20" aria-hidden="true" />
+        <div className="absolute bottom-0 left-1/4 w-px h-12 bg-accent-blue/20" aria-hidden="true" />
         <div className="section-container relative z-10">
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center gap-4 mb-16" aria-hidden="true">
+            <div className="w-12 h-px bg-accent-blue/30" />
+            <div className="w-2 h-2 rounded-full bg-accent-blue/50" />
+            <div className="w-12 h-px bg-accent-blue/30" />
+          </div>
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto mb-16">
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-amber/10 border border-accent-amber/20 text-accent-amber text-caption font-medium mb-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-blue/10 border border-accent-blue/20 text-accent-blue text-caption font-medium mb-4"
             >
-              <span className="w-2 h-2 rounded-full bg-accent-amber" aria-hidden="true" />
+              <span className="w-2 h-2 rounded-full bg-accent-blue" aria-hidden="true" />
               How It Works
             </motion.span>
             <h2 id="assist-process-title" className="font-heading font-bold text-display-md text-text-primary mb-4 gradient-text">
@@ -174,7 +246,7 @@ const Assist = () => {
               ].map((item, index) => (
                 <ScrollReveal key={item.step} delay={index * 0.1}>
                   <div className="text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-accent-amber/10 flex items-center justify-center text-accent-amber font-heading font-bold text-heading-lg mx-auto mb-4">
+                    <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center text-accent-blue font-heading font-bold text-heading-lg mx-auto mb-4">
                       {item.step}
                     </div>
                     <h3 className="font-heading font-bold text-heading-sm text-text-primary mb-2">{item.title}</h3>
@@ -189,14 +261,24 @@ const Assist = () => {
 
       {/* CTA */}
       <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-accent-amber/5 via-transparent to-transparent pointer-events-none" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/5 via-transparent to-transparent pointer-events-none" aria-hidden="true" />
+        {/* Decorative accent elements */}
+        <div className="absolute top-0 left-1/3 w-px h-12 bg-accent-blue/20" aria-hidden="true" />
+        <div className="absolute top-16 right-1/4 w-2 h-2 rounded-full bg-accent-blue/15" aria-hidden="true" />
+        <div className="absolute bottom-0 left-1/2 w-px h-16 bg-accent-blue/20" aria-hidden="true" />
         <div className="section-container relative z-10">
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center gap-4 mb-16" aria-hidden="true">
+            <div className="w-12 h-px bg-accent-blue/30" />
+            <div className="w-2 h-2 rounded-full bg-accent-blue/50" />
+            <div className="w-12 h-px bg-accent-blue/30" />
+          </div>
           <ScrollReveal distance={30} className="text-center max-w-3xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative p-8 lg:p-16 rounded-3xl bg-gradient-to-br from-accent-amber/10 via-bg-elevated/50 to-bg-card/50 border border-accent-amber/20 backdrop-blur-xl"
+              className="relative p-8 lg:p-16 rounded-3xl bg-gradient-to-br from-accent-blue/10 via-bg-elevated/50 to-bg-card/50 border border-accent-blue/20 backdrop-blur-xl"
             >
               <h2 className="font-heading font-bold text-display-md text-text-primary mb-4">
                 Still stuck?

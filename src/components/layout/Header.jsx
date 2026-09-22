@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Github, Linkedin, Twitter, Youtube, Instagram } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, Github, Linkedin, Twitter, Youtube, Instagram, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { NAV_LINKS, SOCIAL_LINKS_CONFIG } from '../../utils/constants';
+import { NAV_LINKS, SOCIAL_LINKS_CONFIG, PILLARS } from '../../utils/constants';
 import { siteConfig } from '../../config/siteConfig';
 import Button from '../ui/Button';
+import PillarIllustration from '../illustrations/PillarIllustrations';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPillarsOpen, setIsPillarsOpen] = useState(false);
+  const pillarsRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -21,7 +24,18 @@ const Header = () => {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsPillarsOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (pillarsRef.current && !pillarsRef.current.contains(e.target)) {
+        setIsPillarsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const [headerRef, isVisible] = useScrollReveal({ triggerOnce: true });
 
@@ -82,6 +96,48 @@ const Header = () => {
                 />
               </Link>
             ))}
+            {/* Pillars Dropdown */}
+            <div className="relative" ref={pillarsRef}>
+              <button
+                onClick={() => setIsPillarsOpen(!isPillarsOpen)}
+                className="px-4 py-2.5 rounded-xl text-body-sm font-medium text-text-secondary hover:text-accent-gold hover:bg-accent-gold/10 transition-all duration-200 ease-expo flex items-center gap-1.5"
+                aria-expanded={isPillarsOpen}
+                aria-haspopup="true"
+              >
+                Pillars
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isPillarsOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+              </button>
+              {isPillarsOpen && (
+                <div
+                  className="absolute top-full left-0 mt-2 w-[400px] p-4 bg-bg-primary/95 backdrop-blur-xl border border-border/30 rounded-2xl shadow-glass z-50"
+                  onMouseLeave={() => setIsPillarsOpen(false)}
+                >
+                  <div className="grid grid-cols-2 gap-3">
+                    {PILLARS.map((pillar) => (
+                      <Link
+                        key={pillar.id}
+                        to={pillar.href}
+                        onMouseEnter={() => setIsPillarsOpen(true)}
+                        className="flex items-start gap-3 p-3 rounded-xl hover:bg-bg-elevated/50 border border-transparent hover:border-border/30 transition-all duration-200 group"
+                      >
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: `${pillar.hex}15` }}
+                        >
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: pillar.hex }} />
+                        </div>
+                        <div>
+                          <p className="font-heading font-semibold text-body-sm text-text-primary group-hover:text-accent-gold transition-colors">
+                            {pillar.label}
+                          </p>
+                          <p className="text-caption text-text-muted">{pillar.description}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Desktop Actions */}
@@ -123,6 +179,22 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
+              {/* Mobile Pillars Section */}
+              <div className="pt-4 border-t border-border/30">
+                <p className="px-4 py-2 text-caption font-medium text-text-muted uppercase tracking-wider">
+                  Pillars
+                </p>
+                {PILLARS.map((pillar) => (
+                  <Link
+                    key={pillar.id}
+                    to={pillar.href}
+                    className="w-full px-4 py-3.5 rounded-xl text-left text-body font-medium text-text-secondary hover:text-accent-gold hover:bg-accent-gold/10 transition-colors flex items-center gap-3"
+                  >
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: pillar.hex }} />
+                    {pillar.label}
+                  </Link>
+                ))}
+              </div>
               <div className="pt-4 border-t border-border/30 flex flex-col gap-3">
                 <Button variant="secondary" className="w-full" as={Link} to="/contact">
                   Contact

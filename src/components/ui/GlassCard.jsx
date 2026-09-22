@@ -32,6 +32,10 @@ const GlassCard = forwardRef(({
     false: '',
     subtle: 'border border-border/30',
     accent: 'border border-accent-gold/20',
+    'accent-blue': 'border border-accent-blue/20',
+    'accent-orange': 'border border-accent-orange/20',
+    'accent-iot': 'border border-accent-iot/20',
+    'accent-home': 'border border-accent-home/20',
   };
 
   const hoverStyles = hover
