@@ -16,9 +16,10 @@ export default {
           card: '#f5f2eb',              // Light cream
         },
         accent: {
-          gold: '#c9a84c',              // Muted gold (DIVITS Assist)
+          gold: '#c9a84c',              // Brand gold
           amber: '#d4a537',             // Soft gold/amber
           yellow: '#e8c547',            // Soft yellow
+          blue: '#2563eb',              // Electric blue (DIVITS Assist)
           orange: '#d4903e',            // Warm orange (DIVITS Build)
           iot: '#2d8f6f',               // Green/teal (DIVITS IoT)
           iotLight: '#34a87d',          // Lighter green/teal
