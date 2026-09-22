@@ -28,6 +28,7 @@ import FileUpload from '../components/ui/FileUpload';
 import Button from '../components/ui/Button';
 import GlassCard from '../components/ui/GlassCard';
 import { Link, useSearchParams } from 'react-router-dom';
+import { getAttribution } from '../utils/attribution';
 
 const orderSchema = z.object({
   service: z.string().min(1, 'Please select a service'),
@@ -177,6 +178,7 @@ const Order = () => {
 
     try {
       // Build plain request payload for Worker/D1
+      const attribution = getAttribution();
       const requestPayload = {
         customer_name: data.name,
         customer_email: data.email,
@@ -186,7 +188,8 @@ const Order = () => {
         description: data.description,
         budget: data.budget,
         deadline: data.deadline,
-        source: 'direct',
+        source: attribution.source,
+        source_referral: attribution.referral || null,
         files: [],
       };
 

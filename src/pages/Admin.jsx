@@ -25,6 +25,9 @@ import {
   Filter,
   Eye,
   BarChart3,
+  CheckCircle,
+  XCircle,
+  Home,
 } from "lucide-react";
 
 const API_URL = "/api/admin/requests";
@@ -338,12 +341,25 @@ function LoginPage({ error, onLogin, passwordInput, setPasswordInput, loading })
 }
 
 /* ---------- Details Drawer ---------- */
-function DetailsDrawer({ request, onClose }) {
+function DetailsDrawer({ request, onClose, onSave, saving, saveError, editStatus, setEditStatus, editNotes, setEditNotes }) {
   const [copied, setCopied] = useState(false);
 
   if (!request) return null;
 
-  const statusClass = statusColors[request.status] || "border-white/10 bg-white/5 text-white/60";
+  // Normalize files: D1 may return it as a JSON string
+  let normalizedFiles = [];
+  try {
+    if (Array.isArray(request.files)) {
+      normalizedFiles = request.files;
+    } else if (typeof request.files === "string") {
+      const parsed = JSON.parse(request.files);
+      normalizedFiles = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch {
+    normalizedFiles = [];
+  }
+
+  const statusClass = statusColors[editStatus] || "border-white/10 bg-white/5 text-white/60";
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60">
@@ -371,9 +387,11 @@ function DetailsDrawer({ request, onClose }) {
             <h2 className="mt-2 text-xl font-heading font-bold text-white">
               {request.customer_name}
             </h2>
-            <span className={cn("mt-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", statusClass)}>
-              {request.status}
-            </span>
+            <div className="mt-3 flex items-center gap-2">
+              <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", statusClass)}>
+                {editStatus}
+              </span>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -414,11 +432,11 @@ function DetailsDrawer({ request, onClose }) {
         </div>
 
         {/* Files */}
-        {request.files && request.files.length > 0 && (
+        {normalizedFiles.length > 0 && (
           <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/30 p-4">
             <p className="mb-2 text-xs font-medium text-zinc-400">Files</p>
             <div className="flex flex-wrap gap-2">
-              {request.files.map((file, i) => (
+              {normalizedFiles.map((file, i) => (
                 <span
                   key={i}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-800 px-3 py-1.5 text-xs text-zinc-300"
@@ -431,23 +449,62 @@ function DetailsDrawer({ request, onClose }) {
           </div>
         )}
 
-        {/* Extra info */}
-        {(request.notes || request.source_referral) && (
-          <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/30 p-4 space-y-3">
-            {request.notes && (
-              <div>
-                <p className="mb-1 text-xs font-medium text-zinc-400">Notes</p>
-                <p className="text-sm text-zinc-300">{request.notes}</p>
-              </div>
-            )}
-            {request.source_referral && (
-              <div>
-                <p className="mb-1 text-xs font-medium text-zinc-400">Referral</p>
-                <p className="text-sm text-zinc-300">{request.source_referral}</p>
-              </div>
-            )}
+        {/* Status Edit */}
+        <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/30 p-4">
+          <label className="mb-1.5 block text-xs font-medium text-zinc-400">
+            Status
+          </label>
+          <select
+            value={editStatus}
+            onChange={(e) => setEditStatus(e.target.value)}
+            className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+          >
+            {statusOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Notes Edit */}
+        <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/30 p-4">
+          <label className="mb-1.5 block text-xs font-medium text-zinc-400">
+            Internal Notes
+          </label>
+          <textarea
+            value={editNotes}
+            onChange={(e) => setEditNotes(e.target.value)}
+            rows={4}
+            className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40 resize-none"
+            placeholder="Add or clear notes..."
+          />
+        </div>
+
+        {/* Save Error */}
+        {saveError && (
+          <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {saveError}
           </div>
         )}
+
+        {/* Save Button */}
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            onClick={onSave}
+            disabled={saving}
+            className="flex-1 rounded-xl bg-orange-400 py-3 font-semibold text-black transition hover:bg-orange-300 disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            onClick={onClose}
+            disabled={saving}
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/50 px-6 py-3 text-sm text-zinc-300 transition hover:bg-white/[0.08] disabled:opacity-50"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -494,52 +551,369 @@ function ProjectsPage() {
   );
 }
 
-function AnalyticsPage() {
+function AnalyticsPage({ onSessionExpired }) {
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const token = sessionStorage.getItem("divits_admin_token");
+
+  async function fetchAnalytics() {
+    setLoading(true);
+    const tok = sessionStorage.getItem("divits_admin_token");
+    if (!tok) {
+      setLoading(false);
+      setError("No authentication token found. Please sign in again.");
+      return;
+    }
+    try {
+      const response = await fetch("/api/admin/analytics", {
+        headers: { Authorization: `Bearer ${tok}` },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          if (onSessionExpired) onSessionExpired();
+          return;
+        }
+        throw new Error(data.error || "Failed to load analytics.");
+      }
+      setAnalyticsData(data.data);
+      setError("");
+    } catch (err) {
+      setError(err.message || "Something went wrong while loading analytics.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    setAnalyticsData(null);
+    fetchAnalytics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await fetchAnalytics();
+  }
+
+  const d = analyticsData;
+
+  /* ---------- Helpers ---------- */
+  function formatName(name) {
+    if (!name) return "—";
+    return String(name)
+      .replaceAll("-", " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  function formatDateLabel(dateStr) {
+    if (!dateStr) return "—";
+    return new Date(dateStr).toLocaleDateString("en-NG", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+
+  /* ---------- SVG Line Chart ---------- */
+  function TimelineChart({ overTime }) {
+    if (!overTime || overTime.length === 0) {
+      return (
+        <div className="flex h-32 items-center justify-center text-sm text-zinc-500">
+          No time-series data available.
+        </div>
+      );
+    }
+
+    const width = 700;
+    const height = 220;
+    const padX = 50;
+    const padY = 30;
+    const innerW = width - padX * 2;
+    const innerH = height - padY * 2;
+
+    const maxCount = Math.max(...overTime.map((o) => o.count), 1);
+    const points = overTime.map((o, i) => ({
+      x: padX + (overTime.length === 1 ? innerW / 2 : (i / (overTime.length - 1)) * innerW),
+      y: padY + innerH - ((o.count / maxCount) * innerH),
+      count: o.count,
+      date: o.date,
+    }));
+
+    const polyline = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+    const areaPath = polyline + ` L${points[points.length - 1].x},${padY + innerH} L${points[0].x},${padY + innerH} Z`;
+
+    return (
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-[700px]" aria-label="Requests over time">
+        {/* Grid lines */}
+        {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
+          const y = padY + innerH * (1 - frac);
+          return (
+            <line key={frac} x1={padX} y1={y} x2={width - padX} y2={y}
+              className="stroke-white/[0.06]" stroke="currentColor" strokeWidth="1" />
+          );
+        })}
+        {/* Area */}
+        <path d={areaPath} fill="url(#chartGrad)" opacity="0.15" />
+        {/* Line */}
+        <path d={polyline} fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Points + labels */}
+        {points.map((p, i) => (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="4" fill="#f97316" className="stroke-zinc-950 stroke-2" />
+            <text x={p.x} y={height - 8} textAnchor="middle" fill="#71717a" fontSize="10" className="font-mono">
+              {formatDateLabel(p.date)}
+            </text>
+            <text x={p.x} y={p.y - 12} textAnchor="middle" fill="#f97316" fontSize="11" className="font-bold font-mono">
+              {p.count}
+            </text>
+          </g>
+        ))}
+        <defs>
+          <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f97316" stopOpacity="1" />
+            <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  }
+
+  /* ---------- Loading State ---------- */
+  if (loading) {
+    return (
+      <div>
+        <PageHeader title="Analytics" description="Loading analytics data." />
+        <div className="flex items-center justify-center py-20">
+          <RefreshCw size={24} className="animate-spin text-orange-400" />
+          <span className="ml-3 text-sm text-zinc-400">Loading analytics...</span>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Error State ---------- */
+  if (error && !d) {
+    return (
+      <div>
+        <PageHeader title="Analytics" description="Request analytics data." />
+        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-6 text-center">
+          <p className="mb-4 text-sm text-red-300">{error}</p>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center gap-2 rounded-lg bg-orange-400 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-orange-300"
+          >
+            <RefreshCw size={16} />
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- Empty State (no data yet) ---------- */
+  if (!d || !analyticsData) {
+    return (
+      <div>
+        <PageHeader title="Analytics" description="Request analytics data." />
+        <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-12 text-center">
+          <BarChart3 size={32} className="mx-auto mb-4 text-zinc-600" />
+          <p className="text-sm text-zinc-400">No analytics data available yet.</p>
+          <button
+            onClick={handleRefresh}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-orange-400 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-orange-300"
+          >
+            <RefreshCw size={16} />
+            Load Data
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { total, status, pillars, services, sources, source_breakdown, referrals, over_time } = d;
+  const maxSourceCount = sources.length > 0 ? Math.max(...sources.map((s) => s.count)) : 1;
+
+  // Group source_breakdown by source
+  const breakdownBySource = {};
+  for (const item of source_breakdown) {
+    if (!breakdownBySource[item.source]) breakdownBySource[item.source] = [];
+    breakdownBySource[item.source].push(item);
+  }
+
   return (
     <div>
-      <PageHeader
-        title="Analytics"
-        description="Track request trends and performance metrics."
-      />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { label: "Requests", value: "—", icon: FileQuestion },
-          { label: "Sources", value: "—", icon: BarChart3 },
-          { label: "Response", value: "—", icon: Clock3 },
-          { label: "Status", value: "—", icon: Filter },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-6"
-          >
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
-              <item.icon size={16} />
-              {item.label}
-            </div>
-            <p className="mt-3 text-2xl font-bold text-white">{item.value}</p>
-          </div>
-        ))}
+      {/* Header */}
+      <PageHeader title="Analytics" description="Track request trends, sources, and performance." />
+
+      {/* Refresh Button */}
+      <div className="mb-6 flex justify-end">
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-zinc-900/50 px-4 py-2 text-xs text-zinc-300 transition hover:bg-white/[0.08] disabled:opacity-50"
+        >
+          <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
+          Refresh
+        </button>
       </div>
-      <div className="mt-6 rounded-xl border border-white/[0.06] bg-zinc-950/60 p-6">
-        <div className="mb-4 flex items-center gap-2 text-sm text-zinc-400">
-          <BarChart3 size={16} />
-          Request Overview
-        </div>
-        <div className="flex h-48 items-end justify-center gap-3">
-          {[40, 65, 45, 80, 55, 70, 50, 90, 60, 75, 55, 65].map((h, i) => (
-            <div
-              key={i}
-              className="w-8 rounded-t bg-orange-400/20 transition-colors hover:bg-orange-400/30"
-              style={{ height: `${h}%` }}
-            />
+
+      {/* Section 5 — Supporting Metrics (at top for immediate visibility) */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Supporting Metrics</h3>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: "Total Requests", value: total, icon: FileQuestion, color: "text-orange-400" },
+            { label: "New", value: status.New, icon: Inbox, color: "text-amber-400" },
+            { label: "Reviewing", value: status.Reviewing, icon: Eye, color: "text-sky-400" },
+            { label: "Accepted", value: status.Accepted, icon: Check, color: "text-emerald-400" },
+            { label: "In Progress", value: status["In Progress"], icon: ArrowRightLeft, color: "text-orange-400" },
+            { label: "Completed", value: status.Completed, icon: CheckCircle, color: "text-green-400" },
+            { label: "Cancelled", value: status.Cancelled, icon: XCircle, color: "text-red-400" },
+            { label: "Sources", value: sources.length, icon: BarChart3, color: "text-violet-400" },
+          ].map((item) => (
+            <div key={item.label} className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-zinc-950/60 p-5 backdrop-blur-sm transition-colors hover:border-white/[0.12]">
+              <div className={cn("absolute top-0 right-0 p-3 opacity-10", item.color)}>
+                <item.icon size={28} />
+              </div>
+              <div className="flex items-center gap-2 text-xs text-zinc-500">
+                <item.icon size={14} />
+                {item.label}
+              </div>
+              <p className="mt-3 text-2xl font-bold text-white">{item.value}</p>
+            </div>
           ))}
         </div>
-        <div className="mt-3 flex items-center justify-between text-xs text-zinc-600">
-          <span>Jan</span>
-          <span>Jun</span>
-          <span>Dec</span>
+      </section>
+
+      {/* Section 1 — Source Attribution */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Where are your customers coming from?</h3>
+        {sources.length === 0 ? (
+          <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-8 text-center">
+            <p className="text-sm text-zinc-500">No source data available yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {sources.map((src) => {
+              const relativeWidth = (src.count / maxSourceCount) * 100;
+              return (
+                <div key={src.source} className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-zinc-950/60 p-5 transition-colors hover:border-white/[0.12]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-white capitalize">{formatName(src.source)}</span>
+                    </div>
+                    <span className="rounded-full bg-orange-400/10 px-2.5 py-0.5 text-xs font-bold text-orange-400">
+                      {src.count}
+                    </span>
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+                    <div
+                      className="h-full rounded-full bg-orange-400 transition-all duration-700"
+                      style={{ width: `${Math.max(relativeWidth, 8)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Section 2 — Source → Service Breakdown */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Source → Service Breakdown</h3>
+        {Object.keys(breakdownBySource).length === 0 ? (
+          <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-8 text-center">
+            <p className="text-sm text-zinc-500">No source-to-service breakdown data available yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {Object.entries(breakdownBySource).map(([source, items]) => (
+              <div key={source} className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-5">
+                <p className="mb-3 text-sm font-medium text-white capitalize">{formatName(source)}</p>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  {items.map((item) => (
+                    <div key={`${item.pillar}-${item.service}`} className="flex items-center justify-between rounded-lg bg-zinc-900/50 px-4 py-3">
+                      <div>
+                        <p className="text-sm text-zinc-300">{formatName(item.pillar)}</p>
+                        <p className="text-xs text-zinc-500">{formatName(item.service)}</p>
+                      </div>
+                      <span className="text-lg font-bold text-orange-400">{item.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Section 3 — Referral / Campaign Attribution */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Referral / Campaign Attribution</h3>
+        {referrals.length === 0 ? (
+          <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-8 text-center">
+            <p className="text-sm text-zinc-500">No referral or campaign attribution yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {referrals.map((ref, i) => (
+              <div key={i} className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-zinc-950/60 px-5 py-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-white capitalize">{formatName(ref.source)}</span>
+                  <span className="text-xs text-zinc-500">→</span>
+                  <span className="text-sm text-zinc-300">{formatName(ref.referral)}</span>
+                </div>
+                <span className="rounded-full bg-orange-400/10 px-3 py-1 text-sm font-bold text-orange-400">
+                  {ref.count}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Section 4 — Requests Over Time */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Requests Over Time</h3>
+        <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-5">
+          <TimelineChart overTime={over_time} />
         </div>
-      </div>
+      </section>
+
+      {/* Section 6 — Pillars */}
+      <section className="mb-8">
+        <h3 className="mb-4 text-lg font-heading font-bold text-white">Pillar Breakdown</h3>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { key: "assist", label: "Assist", icon: MessageCircle },
+            { key: "build", label: "Build", icon: Package },
+            { key: "iot", label: "IoT", icon: Settings2 },
+            { key: "home", label: "Home", icon: Home },
+          ].map((item) => (
+            <div key={item.key} className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-zinc-950/60 p-5 backdrop-blur-sm transition-colors hover:border-white/[0.12]">
+              <div className="flex items-center gap-2 text-xs text-zinc-500">
+                <item.icon size={14} />
+                {item.label}
+              </div>
+              <p className="mt-3 text-2xl font-bold text-white">{pillars[item.key] ?? 0}</p>
+              <div className="mt-2 h-1 w-full rounded-full bg-zinc-800">
+                <div
+                  className="h-full rounded-full bg-orange-400"
+                  style={{ width: `${total > 0 ? ((pillars[item.key] ?? 0) / total) * 100 : 0}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -850,6 +1224,10 @@ export default function Admin() {
   const [activeSection, setActiveSection] = useState("requests");
   const [refreshing, setRefreshing] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [editStatus, setEditStatus] = useState("");
+  const [editNotes, setEditNotes] = useState("");
 
   const isLoggedIn = Boolean(password);
 
@@ -913,6 +1291,65 @@ export default function Admin() {
     setSelectedRequest(null);
     setError("");
     document.documentElement.classList.remove("dark");
+  }
+
+  function handleSessionExpired() {
+    sessionStorage.removeItem("divits_admin_token");
+    setPassword("");
+    setRequests([]);
+    setSelectedRequest(null);
+    setError("");
+  }
+
+  useEffect(() => {
+    if (selectedRequest) {
+      setEditStatus(selectedRequest.status);
+      setEditNotes(selectedRequest.notes || "");
+      setSaveError("");
+    }
+  }, [selectedRequest]);
+
+  async function handleSave() {
+    if (!selectedRequest || !password) return;
+    setSaving(true);
+    setSaveError("");
+    try {
+      const response = await fetch(
+        `/api/admin/requests/${selectedRequest.request_id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${password}`,
+          },
+          body: JSON.stringify({
+            status: editStatus,
+            notes: editNotes.length > 0 ? editNotes : null,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          setPassword("");
+          setSelectedRequest(null);
+          setError("Session expired. Please sign in again.");
+          return;
+        }
+        throw new Error(data.error || "Failed to save changes.");
+      }
+      // Update requests state with the returned data
+      const updatedRequest = data.data;
+      setRequests((prev) =>
+        prev.map((r) => (r.request_id === updatedRequest.request_id ? updatedRequest : r))
+      );
+      setSelectedRequest(updatedRequest);
+    } catch (err) {
+      setSaveError(err.message || "Something went wrong while saving.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   useEffect(() => {
@@ -1220,7 +1657,7 @@ export default function Admin() {
           )}
 
           {activeSection === "projects" && <ProjectsPage />}
-          {activeSection === "analytics" && <AnalyticsPage />}
+          {activeSection === "analytics" && <AnalyticsPage onSessionExpired={handleSessionExpired} />}
           {activeSection === "settings" && <SettingsPage />}
         </div>
       </main>
@@ -1230,6 +1667,13 @@ export default function Admin() {
         <DetailsDrawer
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
+          onSave={handleSave}
+          saving={saving}
+          saveError={saveError}
+          editStatus={editStatus}
+          setEditStatus={setEditStatus}
+          editNotes={editNotes}
+          setEditNotes={setEditNotes}
         />
       )}
     </div>
