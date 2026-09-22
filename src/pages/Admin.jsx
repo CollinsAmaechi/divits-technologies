@@ -28,6 +28,12 @@ import {
   CheckCircle,
   XCircle,
   Home,
+  Plus,
+  Edit2,
+  Trash2,
+  ClipboardList,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 
 const API_URL = "/api/admin/requests";
@@ -341,7 +347,7 @@ function LoginPage({ error, onLogin, passwordInput, setPasswordInput, loading })
 }
 
 /* ---------- Details Drawer ---------- */
-function DetailsDrawer({ request, onClose, onSave, saving, saveError, editStatus, setEditStatus, editNotes, setEditNotes }) {
+function DetailsDrawer({ request, onClose, onSave, saving, saveError, editStatus, setEditStatus, editNotes, setEditNotes, onCreateProject }) {
   const [copied, setCopied] = useState(false);
 
   if (!request) return null;
@@ -498,6 +504,17 @@ function DetailsDrawer({ request, onClose, onSave, saving, saveError, editStatus
             {saving ? "Saving..." : "Save Changes"}
           </button>
           <button
+            onClick={() => {
+              if (onCreateProject) onCreateProject(request);
+              onClose();
+            }}
+            disabled={saving}
+            className="flex items-center gap-2 rounded-xl border border-orange-400/30 bg-orange-400/10 px-4 py-3 text-sm font-medium text-orange-400 transition hover:bg-orange-400/20 disabled:opacity-50"
+          >
+            <Package size={16} />
+            Create Project
+          </button>
+          <button
             onClick={onClose}
             disabled={saving}
             className="rounded-xl border border-white/[0.06] bg-zinc-900/50 px-6 py-3 text-sm text-zinc-300 transition hover:bg-white/[0.08] disabled:opacity-50"
@@ -522,31 +539,539 @@ function PageHeader({ title, description }) {
   );
 }
 
-function ProjectsPage() {
+const projectStatusColors = {
+  Planning: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+  "In Progress": "bg-orange-500/10 text-orange-400 border-orange-500/20",
+  "On Hold": "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  Completed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  Cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
+};
+
+const pillarLabels = {
+  assist: "DIVITS Assist",
+  build: "DIVITS Build",
+  iot: "DIVITS IoT",
+  home: "DIVITS Home",
+};
+
+/* ---------- Projects Page ---------- */
+function ProjectsPage({
+  projects,
+  selectedProject,
+  setSelectedProject,
+  projectSearch,
+  setProjectSearch,
+  projectStatusFilter,
+  setProjectStatusFilter,
+  projectLoading,
+  projectError,
+  projectRefreshing,
+  showCreateForm,
+  setShowCreateForm,
+  creating,
+  createForm,
+  setCreateForm,
+  handleCreateProject,
+  handleUpdateProject,
+  handleDeleteProject,
+  handleRefreshProjects,
+  handleCreateFromRequest,
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+
+  const filteredProjects = useMemo(() => {
+    const query = projectSearch.trim().toLowerCase();
+    return projects.filter((p) => {
+      const matchesStatus = projectStatusFilter === "All" || p.status === projectStatusFilter;
+      if (!query) return matchesStatus;
+      const searchable = [p.project_id, p.title, p.customer_name, p.customer_email, p.service, p.pillar]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return matchesStatus && searchable.includes(query);
+    });
+  }, [projects, projectSearch, projectStatusFilter]);
+
+  async function handleSave() {
+    setSaving(true);
+    setSaveError("");
+    try {
+      const newProject = await handleCreateProject(createForm);
+      setSaving(false);
+      setSelectedProject(newProject);
+      setShowCreateForm(false);
+      setCreateForm({
+        title: "", customer_name: "", customer_email: "", pillar: "build",
+        service: "", description: "", budget: "", deadline: "",
+        status: "Planning", progress: 0, notes: "", request_id: "",
+      });
+    } catch (err) {
+      setSaveError(err.message || "Failed to create project.");
+      setSaving(false);
+    }
+  }
+
+  async function handleUpdate() {
+    if (!selectedProject) return;
+    setSaving(true);
+    setSaveError("");
+    try {
+      await handleUpdateProject(selectedProject.project_id, {
+        status: selectedProject.status,
+        progress: selectedProject.progress,
+        notes: selectedProject.notes,
+      });
+    } catch (err) {
+      setSaveError(err.message || "Failed to update project.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function confirmDeleteProject(projectId) {
+    if (!projectId) return;
+    try {
+      await handleDeleteProject(projectId);
+      setConfirmDelete(null);
+      setSelectedProject(null);
+    } catch (err) {
+      setSaveError(err.message || "Failed to delete project.");
+    }
+  }
+
   return (
     <div>
       <PageHeader
         title="Projects"
         description="View and manage client projects."
       />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-6 transition-colors hover:border-white/[0.12]"
+
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="relative flex-1 max-w-md">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+            <input
+              value={projectSearch}
+              onChange={(e) => setProjectSearch(e.target.value)}
+              placeholder="Search projects..."
+              className="w-full rounded-xl border border-white/[0.06] bg-zinc-900/50 py-2.5 pl-11 pr-4 text-sm text-white outline-none transition focus:border-orange-400/40"
+            />
+          </div>
+          <select
+            value={projectStatusFilter}
+            onChange={(e) => setProjectStatusFilter(e.target.value)}
+            className="rounded-xl border border-white/[0.06] bg-zinc-900/50 px-4 py-2.5 text-sm text-zinc-300 outline-none transition"
           >
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-400/10 text-orange-400">
-              <Package size={22} />
+            {["All", "Planning", "In Progress", "On Hold", "Completed", "Cancelled"].map((s) => (
+              <option key={s} value={s}>{s === "All" ? "All Statuses" : s}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRefreshProjects}
+            disabled={projectRefreshing}
+            className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-xs text-zinc-300 transition hover:bg-white/[0.08] disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={projectRefreshing ? "animate-spin" : ""} />
+            Refresh
+          </button>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="flex items-center gap-2 rounded-lg bg-orange-400 px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-orange-300"
+          >
+            <Plus size={16} />
+            New Project
+          </button>
+        </div>
+      </div>
+
+      {/* Error */}
+      {projectError && (
+        <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          {projectError}
+        </div>
+      )}
+
+      {/* Create Form Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl border border-white/[0.06] bg-zinc-950 p-6 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-lg font-heading font-bold text-white">New Project</h3>
+              <button onClick={() => { setShowCreateForm(false); setSaveError(""); }} className="rounded p-1 text-zinc-400 hover:text-white">
+                <X size={20} />
+              </button>
             </div>
-            <div className="mb-2 h-4 w-3/4 rounded bg-white/[0.06]" />
-            <div className="mb-4 h-3 w-1/2 rounded bg-white/[0.04]" />
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-zinc-700" />
-              <span className="text-xs text-zinc-500">No project data available</span>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Title *</label>
+                  <input
+                    value={createForm.title}
+                    onChange={(e) => setCreateForm({...createForm, title: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Customer Name *</label>
+                  <input
+                    value={createForm.customer_name}
+                    onChange={(e) => setCreateForm({...createForm, customer_name: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Customer Email *</label>
+                  <input
+                    type="email"
+                    value={createForm.customer_email}
+                    onChange={(e) => setCreateForm({...createForm, customer_email: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Linked Request ID (optional)</label>
+                  <input
+                    value={createForm.request_id}
+                    onChange={(e) => setCreateForm({...createForm, request_id: e.target.value})}
+                    placeholder="req-..."
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Pillar *</label>
+                  <select
+                    value={createForm.pillar}
+                    onChange={(e) => setCreateForm({...createForm, pillar: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition"
+                  >
+                    {["assist", "build", "iot", "home"].map((p) => (
+                      <option key={p} value={p}>{pillarLabels[p]}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Service *</label>
+                  <input
+                    value={createForm.service}
+                    onChange={(e) => setCreateForm({...createForm, service: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-400">Description *</label>
+                <textarea
+                  value={createForm.description}
+                  onChange={(e) => setCreateForm({...createForm, description: e.target.value})}
+                  rows={3}
+                  className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40 resize-none"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Budget</label>
+                  <input
+                    value={createForm.budget}
+                    onChange={(e) => setCreateForm({...createForm, budget: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Deadline</label>
+                  <input
+                    type="date"
+                    value={createForm.deadline}
+                    onChange={(e) => setCreateForm({...createForm, deadline: e.target.value})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-zinc-400">Progress</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={createForm.progress}
+                    onChange={(e) => setCreateForm({...createForm, progress: parseInt(e.target.value) || 0})}
+                    className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-400">Status</label>
+                <select
+                  value={createForm.status}
+                  onChange={(e) => setCreateForm({...createForm, status: e.target.value})}
+                  className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition"
+                >
+                  {["Planning", "In Progress", "On Hold", "Completed", "Cancelled"].map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-400">Notes</label>
+                <textarea
+                  value={createForm.notes}
+                  onChange={(e) => setCreateForm({...createForm, notes: e.target.value})}
+                  rows={2}
+                  className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40 resize-none"
+                />
+              </div>
+
+              {saveError && (
+                <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300">
+                  {saveError}
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleSave}
+                  disabled={saving || creating}
+                  className="flex-1 rounded-lg bg-orange-400 py-2.5 font-semibold text-black text-sm transition hover:bg-orange-300 disabled:opacity-50"
+                >
+                  {saving ? "Creating..." : "Create Project"}
+                </button>
+                <button
+                  onClick={() => { setShowCreateForm(false); setSaveError(""); }}
+                  className="rounded-lg border border-white/[0.06] bg-zinc-900/50 px-5 py-2.5 text-sm text-zinc-300 transition hover:bg-white/[0.08]"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* Project List */}
+      {projectLoading && projects.length === 0 ? (
+        <div className="flex items-center justify-center py-20">
+          <RefreshCw size={24} className="animate-spin text-orange-400" />
+          <span className="ml-3 text-sm text-zinc-400">Loading projects...</span>
+        </div>
+      ) : filteredProjects.length === 0 ? (
+        <div className="rounded-xl border border-white/[0.06] bg-zinc-950/60 p-12 text-center">
+          <ClipboardList size={32} className="mx-auto mb-4 text-zinc-600" />
+          <p className="text-sm text-zinc-400">No projects found.</p>
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-zinc-950/50">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[800px]">
+              <thead>
+                <tr className="border-b border-white/[0.06] bg-zinc-900/30">
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Project ID</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Title</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Customer</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Pillar</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Service</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Budget</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Status</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Progress</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Created</th>
+                  <th className="px-5 py-4 text-left text-xs font-medium text-zinc-500">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
+                {filteredProjects.map((project) => (
+                  <tr
+                    key={project.project_id}
+                    className={`transition hover:bg-white/[0.03] ${selectedProject?.project_id === project.project_id ? "bg-orange-400/5" : ""}`}
+                  >
+                    <td className="px-5 py-4">
+                      <p className="font-mono text-xs text-orange-400">{project.project_id}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="text-sm font-medium text-white">{project.title}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="text-sm text-zinc-300">{project.customer_name}</p>
+                      <p className="text-xs text-zinc-500">{project.customer_email}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="text-sm text-zinc-400">{pillarLabels[project.pillar] || project.pillar}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="text-sm text-zinc-300">{project.service}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="text-sm text-zinc-300">{project.budget || "—"}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${projectStatusColors[project.status] || "border-white/10 bg-white/5 text-white/60"}`}>
+                        {project.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-16 overflow-hidden rounded-full bg-zinc-800">
+                          <div className="h-full rounded-full bg-orange-400" style={{ width: `${project.progress}%` }} />
+                        </div>
+                        <span className="text-xs text-zinc-400">{project.progress}%</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-sm text-zinc-400">
+                      {formatDate(project.created_at)}
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setSelectedProject(project)}
+                          className="rounded-lg border border-white/[0.06] bg-zinc-900/50 px-2.5 py-1.5 text-xs text-zinc-300 transition hover:bg-orange-400/10 hover:text-orange-400"
+                          title="View/Edit"
+                        >
+                          <Eye size={14} />
+                        </button>
+                        {confirmDelete === project.project_id ? (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => confirmDeleteProject(project.project_id)}
+                              className="rounded bg-red-500/20 px-2 py-1 text-xs text-red-400 hover:bg-red-500/30"
+                              title="Confirm"
+                            >
+                              <Check size={14} />
+                            </button>
+                            <button
+                              onClick={() => setConfirmDelete(null)}
+                              className="rounded bg-zinc-700 px-2 py-1 text-xs text-zinc-400 hover:bg-zinc-600"
+                              title="Cancel"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDelete(project.project_id)}
+                            className="rounded-lg border border-white/[0.06] bg-zinc-900/50 px-2.5 py-1.5 text-xs text-red-400 transition hover:bg-red-500/20"
+                            title="Delete"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Detail Panel Overlay */}
+      {selectedProject && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60">
+          <div className="w-full max-w-md overflow-y-auto border-l border-white/[0.06] bg-zinc-950 p-6 shadow-2xl animate-in">
+            {/* Header */}
+            <div className="mb-6 flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-xs text-orange-400">{selectedProject.project_id}</p>
+                  <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${projectStatusColors[selectedProject.status] || "border-white/10 bg-white/5 text-white/60"}`}>
+                    {selectedProject.status}
+                  </span>
+                </div>
+                <h3 className="mt-2 text-xl font-heading font-bold text-white">{selectedProject.title}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="rounded-lg p-2 text-zinc-500 transition hover:bg-white/[0.06] hover:text-white"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Details Grid */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { label: "Customer", value: `${selectedProject.customer_name} (${selectedProject.customer_email})` },
+                { label: "Pillar", value: pillarLabels[selectedProject.pillar] || selectedProject.pillar },
+                { label: "Service", value: selectedProject.service },
+                { label: "Budget", value: selectedProject.budget || "Not specified" },
+                { label: "Deadline", value: selectedProject.deadline ? formatDate(selectedProject.deadline) : "Not specified" },
+                { label: "Progress", value: `${selectedProject.progress}%` },
+                { label: "Linked Request", value: selectedProject.request_id || "None" },
+                { label: "Created", value: formatDate(selectedProject.created_at) },
+                { label: "Updated", value: formatDate(selectedProject.updated_at) },
+              ].map((item) => (
+                <div key={item.label} className="rounded-xl border border-white/[0.06] bg-zinc-900/30 p-4">
+                  <p className="mb-1 text-xs font-medium text-zinc-500">{item.label}</p>
+                  <p className="text-sm text-zinc-200">{item.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Description */}
+            <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/50 p-4">
+              <p className="mb-1 text-xs font-medium text-zinc-500">Description</p>
+              <p className="text-sm leading-relaxed text-zinc-200">{selectedProject.description || "No description."}</p>
+            </div>
+
+            {/* Notes */}
+            <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/50 p-4">
+              <label className="mb-1.5 block text-xs font-medium text-zinc-500">Internal Notes</label>
+              <textarea
+                value={selectedProject.notes}
+                onChange={(e) => setSelectedProject({...selectedProject, notes: e.target.value})}
+                rows={3}
+                className="w-full rounded-lg border border-white/[0.06] bg-zinc-900/50 px-3 py-2.5 text-sm text-white outline-none transition focus:border-orange-400/40 resize-none"
+              />
+              <button
+                onClick={handleUpdate}
+                disabled={saving}
+                className="mt-3 flex items-center gap-2 rounded-lg bg-orange-400 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-300 disabled:opacity-50"
+              >
+                {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                {saving ? "Saving..." : "Save Notes"}
+              </button>
+            </div>
+
+            {/* Files */}
+            {selectedProject.files && selectedProject.files.length > 0 && (
+              <div className="mt-4 rounded-xl border border-white/[0.06] bg-zinc-900/50 p-4">
+                <p className="mb-2 text-xs font-medium text-zinc-500">Files</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.files.map((file, i) => (
+                    <span key={i} className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-800 px-3 py-1.5 text-xs text-zinc-300">
+                      <FolderOpen size={12} />
+                      {typeof file === "string" ? file : file.name || String(file)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Delete */}
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                onClick={() => setConfirmDelete(selectedProject.project_id)}
+                className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500/20"
+              >
+                <Trash2 size={16} />
+                Delete Project
+              </button>
+            </div>
+
+            {saveError && (
+              <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300">
+                {saveError}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1229,6 +1754,22 @@ export default function Admin() {
   const [editStatus, setEditStatus] = useState("");
   const [editNotes, setEditNotes] = useState("");
 
+  // Projects state
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectSearch, setProjectSearch] = useState("");
+  const [projectStatusFilter, setProjectStatusFilter] = useState("All");
+  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectError, setProjectError] = useState("");
+  const [projectRefreshing, setProjectRefreshing] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    title: "", customer_name: "", customer_email: "", pillar: "build",
+    service: "", description: "", budget: "", deadline: "",
+    status: "Planning", progress: 0, notes: "", request_id: "",
+  });
+
   const isLoggedIn = Boolean(password);
 
   // Set dark mode for admin
@@ -1301,6 +1842,143 @@ export default function Admin() {
     setError("");
   }
 
+  async function loadProjects(token = password) {
+    if (!token) return;
+    setProjectLoading(true);
+    setProjectError("");
+    try {
+      const response = await fetch("/api/admin/projects", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          setPassword("");
+          setError("Session expired. Please sign in again.");
+          return;
+        }
+        throw new Error(data.error || "Failed to load projects.");
+      }
+      setProjects(data.data || []);
+    } catch (err) {
+      setProjectError(err.message || "Something went wrong.");
+    } finally {
+      setProjectLoading(false);
+    }
+  }
+
+  async function handleRefreshProjects() {
+    if (!password) return;
+    setProjectRefreshing(true);
+    await loadProjects(password);
+    setTimeout(() => setProjectRefreshing(false), 500);
+  }
+
+  async function handleCreateProject(form) {
+    try {
+      if (!password) {
+        throw new Error("Not authenticated.");
+      }
+      setCreating(true);
+      const response = await fetch("/api/admin/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${password}`,
+        },
+        body: JSON.stringify(form),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          setPassword("");
+          throw new Error("Session expired. Please sign in again.");
+        }
+        throw new Error(data.error || "Failed to create project.");
+      }
+      await loadProjects(password);
+      return data.data;
+    } catch (err) {
+      throw err;
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function handleUpdateProject(projectId, updates) {
+    if (!password || !projectId) return;
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${password}`,
+        },
+        body: JSON.stringify(updates),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          setPassword("");
+          setSelectedProject(null);
+          setError("Session expired. Please sign in again.");
+          return;
+        }
+        throw new Error(data.error || "Failed to update project.");
+      }
+      await loadProjects(password);
+      setSelectedProject(data.data);
+    } catch (err) {
+      setSaveError(err.message || "Something went wrong while updating.");
+      throw err;
+    }
+  }
+
+  async function handleDeleteProject(projectId) {
+    if (!password || !projectId) return;
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${password}` },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem("divits_admin_token");
+          setPassword("");
+          setSelectedProject(null);
+          setError("Session expired. Please sign in again.");
+          return;
+        }
+        throw new Error(data.error || "Failed to delete project.");
+      }
+      await loadProjects(password);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  function handleCreateFromRequest(request) {
+    setCreateForm({
+      title: "",
+      customer_name: request.customer_name || "",
+      customer_email: request.customer_email || "",
+      pillar: request.pillar || "build",
+      service: request.service || "",
+      description: request.description || "",
+      budget: request.budget || "",
+      deadline: request.deadline || "",
+      status: "Planning",
+      progress: 0,
+      notes: "",
+      request_id: request.request_id || "",
+    });
+    setShowCreateForm(true);
+  }
+
   useEffect(() => {
     if (selectedRequest) {
       setEditStatus(selectedRequest.status);
@@ -1355,8 +2033,16 @@ export default function Admin() {
   useEffect(() => {
     if (password) {
       loadRequests(password);
+      loadProjects(password);
     }
   }, [password]);
+
+  // Reload projects when navigating to the projects section
+  useEffect(() => {
+    if (activeSection === "projects" && password) {
+      loadProjects(password);
+    }
+  }, [activeSection, password]);
 
   const filteredRequests = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -1656,7 +2342,30 @@ export default function Admin() {
             </>
           )}
 
-          {activeSection === "projects" && <ProjectsPage />}
+          {activeSection === "projects" && (
+            <ProjectsPage
+              projects={projects}
+              selectedProject={selectedProject}
+              setSelectedProject={setSelectedProject}
+              projectSearch={projectSearch}
+              setProjectSearch={setProjectSearch}
+              projectStatusFilter={projectStatusFilter}
+              setProjectStatusFilter={setProjectStatusFilter}
+              projectLoading={projectLoading}
+              projectError={projectError}
+              projectRefreshing={projectRefreshing}
+              showCreateForm={showCreateForm}
+              setShowCreateForm={setShowCreateForm}
+              creating={creating}
+              createForm={createForm}
+              setCreateForm={setCreateForm}
+              handleCreateProject={handleCreateProject}
+              handleUpdateProject={handleUpdateProject}
+              handleDeleteProject={handleDeleteProject}
+              handleRefreshProjects={handleRefreshProjects}
+              handleCreateFromRequest={handleCreateFromRequest}
+            />
+          )}
           {activeSection === "analytics" && <AnalyticsPage onSessionExpired={handleSessionExpired} />}
           {activeSection === "settings" && <SettingsPage />}
         </div>
@@ -1674,6 +2383,7 @@ export default function Admin() {
           setEditStatus={setEditStatus}
           editNotes={editNotes}
           setEditNotes={setEditNotes}
+          onCreateProject={handleCreateFromRequest}
         />
       )}
     </div>
